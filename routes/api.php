@@ -27,11 +27,14 @@ Route::prefix('account')->group(function () {
     Route::post('requestid', 'Rest\RestAccountController@requestId')->name('requestid');
     Route::get('requestid', 'Rest\RestAccountController@requestId')->name('requestid');
 });
-Route:: group(['prefix' => 'histories' , 'middleware'=>'auth:api'  ], function () {
+Route:: group(['prefix' => 'admin' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
     // Route::post('statistic', 'Rest\RestHistoriesController@statistic');
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
 Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], function () {
-    Route::post('user', 'Rest\RestAccountDashboardController@getUser');
+    // Route::post('user', 'Rest\RestAccountDashboardController@getUser');
     Route::post('logout', 'Rest\RestAccountController@logout');
     // Route::post('updateprofile', 'Rest\RestAccountDashboardController@updateProfile');
     

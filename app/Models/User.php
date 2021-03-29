@@ -108,15 +108,19 @@ class User extends BaseModel implements
 
     public function hasRole($roles)
     {
-        // dd($role, $this->attributes['role']);
+        $user_roles = json_decode($this->attributes['roles']);
+        // dd($roles, $user_roles);
         if (!is_array($roles)) {
             $roles = [$roles];
         }
         foreach ($roles as $role) {
-            if ($this->attributes['role'] == $role) {
-                return true;
+            foreach ($user_roles as $user_role) {
+                if ($user_role == $role) {
+                    return true;
+                }
             }
         }
+        out("NO ROLE");
         return false;
         // return in_array($role, [$this->attributes['role']]);
         // return in_array($role, $this->roles);
