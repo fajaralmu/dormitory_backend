@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Services\AccountService;
+use App\Services\ConfigurationService;
+use App\Services\MusyrifManagementService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use App\Socialite\LaravelPassportProvider;
@@ -18,8 +20,16 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         $accountService = new AccountService();
+        $configService = new ConfigurationService();
+        $musyrifManagementService = new MusyrifManagementService();
         $this->app->bind(AccountService::class, function ($app) use ($accountService) {
             return $accountService;
+        });
+        $this->app->bind(MusyrifManagementService::class, function ($app) use ($musyrifManagementService) {
+            return $musyrifManagementService;
+        });
+        $this->app->bind(ConfigurationService::class, function ($app) use ($configService) {
+            return $configService;
         });
     }
 
