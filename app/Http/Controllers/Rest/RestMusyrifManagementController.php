@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Rest;
 use App\Dto\WebResponse;
 use App\Services\MusyrifManagementService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Throwable;
 
 class RestMusyrifManagementController extends BaseRestController
@@ -19,6 +19,16 @@ class RestMusyrifManagementController extends BaseRestController
     {
         try {
             $response  = $this->musyrifManagemenetService->getUserList();
+            return parent::jsonResponse($response);
+        } catch (Throwable $th) {
+            return parent::errorResponse($th);
+        }
+    }
+    public function activateMusyrif(Request $request): JsonResponse
+    {
+        try {
+            $webRequest = $this->getWebRequest($request);
+            $response  = $this->musyrifManagemenetService->activate($webRequest);
             return parent::jsonResponse($response);
         } catch (Throwable $th) {
             return parent::errorResponse($th);

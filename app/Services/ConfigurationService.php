@@ -7,6 +7,7 @@ class ConfigurationService
 {
     public function getApplicationProfile(): ApplicationProfile
     {
+        // return (ApplicationProfile::defaultModel());
         $existing = ApplicationProfile::where(['code'=>ApplicationProfile::$CODE])->first();
         if (is_null($existing)) {
             $model = ApplicationProfile::defaultModel();

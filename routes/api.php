@@ -28,6 +28,8 @@ Route::prefix('account')->group(function () {
     Route::get('requestid', 'Rest\RestAccountController@requestId')->name('requestid');
 });
 Route:: group(['prefix' => 'admin' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
+    //RestMusyrifManagementController
+    Route::post('userlist', 'Rest\RestMusyrifManagementController@userlist');
     // Route::post('statistic', 'Rest\RestHistoriesController@statistic');
     Route::get('/user', function (Request $request) {
         return $request->user();

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\Pegawai;
 use App\Models\User;
@@ -36,5 +37,10 @@ class MusyrifManagementService
                 }
             }
         }
+    }
+
+    public function activate(WebRequest $request) :WebResponse
+    {
+        
     }
 }

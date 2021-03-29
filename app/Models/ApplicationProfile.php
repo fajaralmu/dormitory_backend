@@ -24,11 +24,16 @@ class ApplicationProfile extends BaseModel
 	public static function defaultModel() : ApplicationProfile
 	{
 		$obj = new ApplicationProfile();
-		$obj->setAttribute('name', "Asrama KIIS");
-		$obj->setAttribute('code', ApplicationProfile::$CODE);
-		$obj->setAttribute('welcoming_message', "Ahlan wa sahlan");
-		$obj->setAttribute('description', "Aplikasi Asrama");
-		
+		$obj->name = 'Asrama KIIS';
+		$obj->code = ApplicationProfile::$CODE;
+		$obj->welcoming_message = "WELCOME";
+		$obj->description = "Aplikasi Asrama";
+		// $obj->setAttribute('name', "Asrama KIIS");
+		// $obj->setAttribute('code', ApplicationProfile::$CODE);
+		// $obj->setAttribute('welcoming_message', "Ahlan wa sahlan");
+		// $obj->setAttribute('description', "Aplikasi Asrama");
+		 
 		return $obj;
 	}
+	
 }
