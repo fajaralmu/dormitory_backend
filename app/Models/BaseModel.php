@@ -31,4 +31,16 @@ class BaseModel extends Model
         }
         return $parent_attr;
     }
+
+    public function setRawAttributes(array $attributes, $sync = false)
+    {
+        parent::setRawAttributes($attributes, $sync);
+        if (sizeof($this->fillable) > 0) {
+            foreach ($this->fillable as $fill) {
+                if (Arr::get($attributes, $fill)) {
+                    $this->$fill = $attributes[$fill];
+                }
+            }
+        }
+    }
 }

@@ -7,5 +7,8 @@ use App\Models\User;
 class WebRequest
 {
     public User $user;
-    public Pegawai $employee;
+
+    //activate musyrif
+    public ?string $employee_id;
+    public ?bool $active;
 }

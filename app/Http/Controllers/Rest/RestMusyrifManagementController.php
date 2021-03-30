@@ -24,7 +24,7 @@ class RestMusyrifManagementController extends BaseRestController
             return parent::errorResponse($th);
         }
     }
-    public function activateMusyrif(Request $request): JsonResponse
+    public function activate(Request $request): JsonResponse
     {
         try {
             $webRequest = $this->getWebRequest($request);

@@ -13,7 +13,6 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 
 class User extends BaseModel implements
@@ -77,6 +76,7 @@ class User extends BaseModel implements
 
     public function siswa()
     {
+        
         return $this->belongsTo(Siswa::class, 'nis', 'nis');
     }
 
@@ -124,5 +124,35 @@ class User extends BaseModel implements
         return false;
         // return in_array($role, [$this->attributes['role']]);
         // return in_array($role, $this->roles);
+    }
+
+    public function addRole(string $role)
+    {
+        if ($this->hasRole($role)) {
+            return;
+        }
+        $user_roles = json_decode($this->roles);
+       
+        array_push($user_roles, $role);
+        $this->roles = json_encode($user_roles);
+        $this->setAttribute('roles', $user_roles);
+        $this->save();
+    }
+
+    public function removeRole(string $role)
+    {
+        if (false == $this->hasRole($role)) {
+            return;
+        }
+        $user_roles = json_decode($this->roles);
+        for ($i=0; $i < sizeof($user_roles); $i++) {
+            if ($role == $user_roles[$i]) {
+                array_splice($user_roles, $i, 1);
+                break;
+            }
+        }
+        $this->roles  = json_encode($user_roles);
+        $this->setAttribute('roles', $user_roles);
+        $this->save();
     }
 }
