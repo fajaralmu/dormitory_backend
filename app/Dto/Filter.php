@@ -6,5 +6,5 @@ class Filter
 {
     public int $page = 0;
     public int $limit = 5;
-    public array $fields_filter = [];
+    public array $fieldsFilter = [];
 }

@@ -19,13 +19,25 @@ class MusyrifManagementService
         $filter = $webRequest->filter;
         $limit = $filter->limit;
         $offset = $filter->limit * $filter->page;
+        $filterName = '';
+        try {
+            $filterName = $filter->fieldsFilter['name'];
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        
         $response = new WebResponse();
         $employees =  DB::select(
-            'select p.* from pegawai p left 
-             join users u on u.nip = p.nip order by u.name asc limit '.$limit.' offset '.$offset
+            "select p.* from pegawai p left 
+             join users u on u.nip = p.nip
+             where u.name like '%".$filterName."%' or u.nickname like '%".$filterName."%'
+             order by u.name asc limit ".$limit." offset ".$offset
         );
         $count_result = DB::select(
-            'select count(*) as count from pegawai '
+            "select count(*) as count from pegawai left 
+            join users u on u.nip = pegawai.nip
+            where u.name like '%".$filterName."%' or u.nickname like '%".$filterName."%'
+            "
         );
         if (sizeof($employees) > 0) {
             $this->populateWithUser($employees);
