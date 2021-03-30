@@ -9,8 +9,9 @@ use App\Models\User;
 use Error;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Foreach_;
 
+//
+define('ROLE_MUSYRIF_ASRAMA', 'musyrif_asrama');
 class MusyrifManagementService
 {
     public function getUserList() : WebResponse
@@ -51,9 +52,9 @@ class MusyrifManagementService
             throw new Error("user not found");
         }
         if ($request->active == true) {
-            $user->addRole('musyrif_asrama');
+            $user->addRole(ROLE_MUSYRIF_ASRAMA);
         } else {
-            $user->removeRole('musyrif_asrama');
+            $user->removeRole(ROLE_MUSYRIF_ASRAMA);
         }
        
         $response = new WebResponse();

@@ -42,3 +42,8 @@ Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], fun
     // Route::post('updateprofile', 'Rest\RestAccountDashboardController@updateProfile');
     
 });
+Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama']  ], function () {
+    //RestMusyrifManagementController
+    Route::post('studentlist', 'Rest\RestStudentActivityManagementController@studentlist');
+    // Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
+});

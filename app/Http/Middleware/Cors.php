@@ -16,6 +16,7 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
+        dd("handle cors");
         if ($request->getMethod() == 'OPTIONS') {
 
             header('Access-Control-Allow-Origin: *');
