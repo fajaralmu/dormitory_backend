@@ -19,24 +19,35 @@ class MusyrifManagementService
         $filter = $webRequest->filter;
         $limit = $filter->limit;
         $offset = $filter->limit * $filter->page;
+        $fieldsFilter = $filter->fieldsFilter;
         $filterName = '';
+        $musyrif_only = false;
         try {
-            $filterName = $filter->fieldsFilter['name'];
+            if (Arr::has($fieldsFilter, 'name')) {
+                $filterName = $fieldsFilter['name'];
+            }
+            if (Arr::has($fieldsFilter, 'musyrif_only')) {
+                $musyrif_only = $fieldsFilter['musyrif_only'] ==  true;
+            }
         } catch (\Throwable $th) {
             //throw $th;
         }
+
+        $filterRole = $musyrif_only ? "musyrif_asrama" : "";
         
         $response = new WebResponse();
         $employees =  DB::select(
             "select p.* from pegawai p left 
              join users u on u.nip = p.nip
-             where u.name like '%".$filterName."%' or u.nickname like '%".$filterName."%'
+             where (u.name like '%".$filterName."%' or u.email like '%".$filterName."%') 
+             and u.roles like '%".$filterRole."%'
              order by u.name asc limit ".$limit." offset ".$offset
         );
         $count_result = DB::select(
             "select count(*) as count from pegawai left 
             join users u on u.nip = pegawai.nip
-            where u.name like '%".$filterName."%' or u.nickname like '%".$filterName."%'
+            where (u.name like '%".$filterName."%' or u.email like '%".$filterName."%') 
+            and u.roles like '%".$filterRole."%' 
             "
         );
         if (sizeof($employees) > 0) {
@@ -58,7 +69,7 @@ class MusyrifManagementService
         foreach ($employees as $employee) {
             foreach ($users as $user) {
                 if ($employee->nip == $user->nip) {
-                    $employee->user = $user;
+                    $employee->user = User::forResponse($user);
                 }
             }
         }

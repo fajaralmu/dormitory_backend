@@ -29,7 +29,7 @@ Route::prefix('account')->group(function () {
 });
 Route:: group(['prefix' => 'musyrifmanagement' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
     //RestMusyrifManagementController
-    Route::post('employees', 'Rest\RestMusyrifManagementController@userlist');
+    Route::post('employees', 'Rest\RestMusyrifManagementController@employees');
     Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
     // Route::post('statistic', 'Rest\RestHistoriesController@statistic');
     Route::get('/user', function (Request $request) {
@@ -37,14 +37,14 @@ Route:: group(['prefix' => 'musyrifmanagement' , 'middleware'=>['auth:api', 'rol
     });
 });
 Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], function () {
-    // Route::post('user', 'Rest\RestAccountDashboardController@getUser');
+    
     Route::post('logout', 'Rest\RestAccountController@logout');
     Route::post('requestid', 'Rest\RestAccountController@requestId');
-    // Route::post('updateprofile', 'Rest\RestAccountDashboardController@updateProfile');
     
 });
 Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama']  ], function () {
     //RestMusyrifManagementController
+    Route::post('classes', 'Rest\RestStudentActivityManagementController@classes');
     Route::post('studentlist', 'Rest\RestStudentActivityManagementController@studentlist');
     // Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
 });

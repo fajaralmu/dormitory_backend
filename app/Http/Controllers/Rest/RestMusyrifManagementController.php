@@ -15,7 +15,7 @@ class RestMusyrifManagementController extends BaseRestController
     {
         $this->musyrifManagemenetService = $musyrifManagemenetService;
     }
-    public function userlist(Request $request): JsonResponse
+    public function employees(Request $request): JsonResponse
     {
         try {
             $webRequest = $this->getWebRequest($request);

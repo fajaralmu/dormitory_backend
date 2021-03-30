@@ -10,7 +10,7 @@ class WebResponse
     public $code = '00';
     public $message = 'success';
     public array $items;
-    public $item;
+    public object $item;
     public ?bool $loggedIn;
 
     public ?ApplicationProfile $profile;
@@ -18,4 +18,5 @@ class WebResponse
 
     public ?Filter $filter;
     public int $totalData = 0;
+ 
 }
