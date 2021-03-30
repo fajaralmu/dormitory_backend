@@ -54,6 +54,7 @@ class User extends BaseModel implements
     protected $roles;
     protected $active;
     protected $yayasan_id;
+    protected $api_token;
 
     /**
      * The attributes that should be hidden for arrays.
@@ -154,5 +155,12 @@ class User extends BaseModel implements
         $this->roles  = json_encode($user_roles);
         $this->setAttribute('roles', $user_roles);
         $this->save();
+    }
+
+    public static function forResponse(User $u) : User
+    {
+        $u->password = (null);
+        $u->setAttribute('api_token', null);
+        return $u;
     }
 }

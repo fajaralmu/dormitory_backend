@@ -86,27 +86,25 @@ class AccountService
         return $user;
     }
 
-    public function loginAttemp(WebRequest $request) : WebResponse
+    public function loginAttemp(Request $request) : string
     {
-        $user = $request->user;
-        $response = new WebResponse();
-        $cred = ['email' => $user->email, 'password' => $user->password];
-        out(" request : ", $request);
-        $dbUser = User::where(['email' => $user->email])->first();
+       
+        $email = $request->post('email');
+        $cred = ['email' => $email, 'password' => $request->post('password')];
+       
+        $dbUser = User::where(['email' => $email])->first();
         if (is_null($dbUser)) {
-            throw new Exception("Email not found");
+            throw new Exception("Email : $email not found");
         }
         if (Auth::attempt($cred)) {
             
             $token = Str::random(60);
             $hashedToken = hash('sha256', $token);
             $user = $this->updateApiToken(Auth::user()->id, $hashedToken);
-            $response->user = $user;
-            // $request->session()->put('api_token', $hashedToken);
+            return $hashedToken;
         } else {
             throw new Exception("Login Failed: password invalid");
         }
-        return $response;
     }
 
     private function updateApiToken($id, string $token)

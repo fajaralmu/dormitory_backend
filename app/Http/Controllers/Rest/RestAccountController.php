@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rest;
 
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
+use App\Models\User;
 use App\Services\AccountService;
 use App\Services\ConfigurationService;
 use App\Services\MasterDataService;
@@ -28,6 +29,10 @@ class RestAccountController extends BaseRestController
             $response = new WebResponse();
             $response->message = Str::random(10);
             $response->profile = $this->configurationService->getApplicationProfile();
+            $response->loggedIn = is_null($request->user()) == false;
+            if ($response->loggedIn) {
+                $response->user = User::forResponse($request->user());
+            }
             return parent::jsonResponse($response);
         } catch (Throwable $th) {
             return parent::errorResponse($th);
@@ -36,20 +41,19 @@ class RestAccountController extends BaseRestController
 
     public function login(Request $request) : JsonResponse
     {
-        $payload = parent::getWebRequest($request);
+        // $payload = parent::getWebRequest($request);
         try {
-            $response = $this->account_service->loginAttemp($payload);
-            $user = $response->user;
-            $api_token = $user->api_token;
-
-            return parent::jsonResponse($response, ['api_token'=>$api_token]);
+            $api_token = $this->account_service->loginAttemp($request);
+            $user = $request->user();
+            $response = new WebResponse();
+            $response->user = User::forResponse($user);
+            return parent::jsonResponse($response, $this->headerApiToken($api_token));
         } catch (Throwable $th) {
             return parent::errorResponse($th);
         }
     }
     public function logout(Request $request) : JsonResponse
     {
-         
         try {
             $response = $this->account_service->logout($request->user());
             // $response->user = null;

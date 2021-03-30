@@ -14,14 +14,25 @@ use Illuminate\Support\Facades\DB;
 define('ROLE_MUSYRIF_ASRAMA', 'musyrif_asrama');
 class MusyrifManagementService
 {
-    public function getUserList() : WebResponse
+    public function getUserList(WebRequest $webRequest) : WebResponse
     {
+        $filter = $webRequest->filter;
+        $limit = $filter->limit;
+        $offset = $filter->limit * $filter->page;
         $response = new WebResponse();
-        $employees =  DB::select('select p.* from pegawai p left join users u on u.nip = p.nip order by u.name asc');
+        $employees =  DB::select(
+            'select p.* from pegawai p left 
+             join users u on u.nip = p.nip order by u.name asc limit '.$limit.' offset '.$offset
+        );
+        $count_result = DB::select(
+            'select count(*) as count from pegawai '
+        );
         if (sizeof($employees) > 0) {
             $this->populateWithUser($employees);
         }
+        $response->filter = $filter;
         $response->items = $employees;
+        $response->totalData =  $count_result[0]->count;
         return $response;
     }
 

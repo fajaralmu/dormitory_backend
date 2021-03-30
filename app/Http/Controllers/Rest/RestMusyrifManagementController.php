@@ -18,8 +18,9 @@ class RestMusyrifManagementController extends BaseRestController
     public function userlist(Request $request): JsonResponse
     {
         try {
-            $response  = $this->musyrifManagemenetService->getUserList();
-            return parent::jsonResponse($response);
+            $webRequest = $this->getWebRequest($request);
+            $response  = $this->musyrifManagemenetService->getUserList($webRequest);
+            return parent::jsonResponse($response, $this->resentToken($request));
         } catch (Throwable $th) {
             return parent::errorResponse($th);
         }
@@ -29,7 +30,7 @@ class RestMusyrifManagementController extends BaseRestController
         try {
             $webRequest = $this->getWebRequest($request);
             $response  = $this->musyrifManagemenetService->activate($webRequest);
-            return parent::jsonResponse($response);
+            return parent::jsonResponse($response, $this->resentToken($request));
         } catch (Throwable $th) {
             return parent::errorResponse($th);
         }

@@ -6,6 +6,7 @@ use App\Models\User;
 
 class WebRequest
 {
+    public Filter $filter;
     public User $user;
 
     //activate musyrif

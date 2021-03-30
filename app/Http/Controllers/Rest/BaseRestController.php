@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Utils\ObjectUtil;
 use Throwable;
+use Illuminate\Support\Str;
 
 class BaseRestController extends Controller {
 
@@ -64,5 +65,16 @@ class BaseRestController extends Controller {
         $response->message = $th->getMessage();
         $response->code = "-1";
         return response()->json(($response), 500);
+    }
+
+    protected function headerApiToken(string $api_token)
+    {
+        return ['api_token'=>$api_token, 'Access-Control-Expose-Headers'=>'api_token'];
+    }
+    protected function resentToken(Request $request)
+    {
+        $auth = $request->header('Authorization');
+        $token =  Str::replaceFirst('Bearer ', "", $auth);
+        return ['api_token'=>$token, 'Access-Control-Expose-Headers'=>'api_token'];
     }
 }
