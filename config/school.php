@@ -2,8 +2,8 @@
 
 return [
 	'm2m_sync_secret' => env('M2M_SYNC_SECRET'),
-	'tahun_ajaran' => '2019-2020',
-	'semester' => 1,
+	'tahun_ajaran' => '2020-2021',
+	'semester' => 2,
 	'pilihan_jurusan' => [
 		'0' => 'Non Jurusan',
 		'1' => 'IPA',
