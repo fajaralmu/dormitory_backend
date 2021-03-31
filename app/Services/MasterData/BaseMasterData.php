@@ -8,6 +8,7 @@ use App\Models\BaseModel;
 use Error;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class BaseMasterData
 {
@@ -36,6 +37,13 @@ class BaseMasterData
     public function list():WebResponse
     {
         throw new Exception("NOT IMPLEMENTED");
+    }
+    protected function getFieldsFilter(string $key)
+    {
+        if (is_null($this->filter) || is_null($this->filter->fieldsFilter)) {
+            return null;
+        }
+        return Arr::has($this->filter->fieldsFilter, $key) ? Arr::get($this->filter->fieldsFilter, $key) : null;
     }
     public function doUpdate(BaseModel $model) : bool
     {

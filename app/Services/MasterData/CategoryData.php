@@ -18,8 +18,9 @@ class CategoryData extends BaseMasterData
     {
         $limit = $this->limit();
         $offset = $this->offset();
-        $items = DB::select("select c.* from categories c order by c.name limit ".$limit." offset ".$offset);
-        $result_count = DB::select("select count(*) as count from categories");
+        $filterName = $this->getFieldsFilter('name') ?? "";
+        $items = DB::select("select c.* from categories c where c.name like '%".$filterName."%' order by c.name  limit ".$limit." offset ".$offset);
+        $result_count = DB::select("select count(*) as count from categories c where c.name like '%".$filterName."%'");
         $response = new WebResponse();
 
         $response->totalData = $this->total_data = $result_count[0]->count;
