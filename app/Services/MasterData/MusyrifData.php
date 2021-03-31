@@ -55,6 +55,5 @@ class MusyrifData extends BaseMasterData
                 $employee->user = User::forResponse($employee->user);
             }
         }
-        
     }
 }

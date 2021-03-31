@@ -1,7 +1,7 @@
 <?php
-
+//
 namespace App\Services\MasterData;
-use Illuminate\Support\Arr;
+
 use App\Dto\Filter;
 use App\Dto\WebResponse;
 use App\Models\Siswa;
@@ -55,11 +55,8 @@ class StudentData extends BaseMasterData
 
     private function hidePassword(Collection $students)
     {
-        $nis_array = [];
         foreach ($students as $student) {
             $student->user = User::forResponse($student->user);
         }
-       
     }
-
 }

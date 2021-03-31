@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\MasterData;
 
 use App\Dto\Filter;
@@ -21,6 +22,7 @@ class CategoryData extends BaseMasterData
         $result_count = $this->queryCount($wheres);
         
         $response = $this->generalResponse();
+
         $response->totalData = $this->total_data = $result_count;
         $response->items = $this->result_list = $items;
         return $response;

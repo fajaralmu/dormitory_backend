@@ -7,8 +7,6 @@ use App\Dto\WebResponse;
 use App\Models\BaseModel;
 use Error;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 
