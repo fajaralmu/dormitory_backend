@@ -17,7 +17,8 @@ class RestStudentActivityManagementController extends BaseRestController
     public function classes(Request $request) : JsonResponse
     {
         try {
-            return $this->jsonResponse($this->studentService->getClasses());
+             $response = ($this->studentService->getClasses());
+             return parent::jsonResponseAndResendToken($response, $request);
         } catch (\Throwable $th) {
             return $this->errorResponse($th);
         }
@@ -27,7 +28,7 @@ class RestStudentActivityManagementController extends BaseRestController
         try {
             $webRequest = $this->getWebRequest($request);
             $response = $this->studentService->getStudentList($webRequest);
-            return $this->jsonResponse($response);
+            return parent::jsonResponseAndResendToken($response, $request);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->errorResponse($th);

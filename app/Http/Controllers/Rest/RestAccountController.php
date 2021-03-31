@@ -33,7 +33,7 @@ class RestAccountController extends BaseRestController
             if ($response->loggedIn) {
                 $response->user = User::forResponse($request->user());
             }
-            return parent::jsonResponse($response);
+            return parent::jsonResponseAndResendToken($response, $request);
         } catch (Throwable $th) {
             return parent::errorResponse($th);
         }

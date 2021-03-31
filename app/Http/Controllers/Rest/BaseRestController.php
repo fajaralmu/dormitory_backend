@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Utils\ObjectUtil;
 use Throwable;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BaseRestController extends Controller {
 
@@ -29,6 +30,11 @@ class BaseRestController extends Controller {
         }
         
         return $result;
+    }
+
+    protected function jsonResponseAndResendToken(WebResponse $response, Request $request) : JsonResponse
+    {
+        return $this->jsonResponse($response, $this->resentToken($request));
     }
 
     protected function webResponse($code = null, $message = null)

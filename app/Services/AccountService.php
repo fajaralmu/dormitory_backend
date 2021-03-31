@@ -100,16 +100,16 @@ class AccountService
             
             $token = Str::random(60);
             $hashedToken = hash('sha256', $token);
-            $user = $this->updateApiToken(Auth::user()->id, $hashedToken);
+            $user = $this->updateApiToken($email, $hashedToken);
             return $hashedToken;
         } else {
             throw new Exception("Login Failed: password invalid");
         }
     }
 
-    private function updateApiToken($id, string $token)
+    private function updateApiToken(string $email, string $token)
     {
-        $user = User::find($id);
+        $user = User::where('email', $email)->first();
         $user->api_token = $token;
         $user->save();
         return $user;

@@ -161,6 +161,7 @@ class User extends BaseModel implements
     {
         $u->password = (null);
         $u->setAttribute('api_token', null);
+        $u->setAttribute('password', null);
         return $u;
     }
 }
