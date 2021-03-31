@@ -5,7 +5,6 @@ use App\Dto\Filter;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
 
 class CategoryData extends BaseMasterData
 {

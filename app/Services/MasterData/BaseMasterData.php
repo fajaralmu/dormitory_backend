@@ -38,9 +38,13 @@ class BaseMasterData
     {
         throw new Exception("NOT IMPLEMENTED");
     }
+    protected function queryObject()
+    {
+        return DB::table($this->tableName);
+    }
     protected function queryList(array $wheres, string $orderBy = null, string $orderType = 'asc') : array
     {
-        $query = DB::table($this->tableName);
+        $query = $this->queryObject();
         foreach ($wheres as $where) {
             $query->where($where[0], $where[1], $where[2]);
         }
@@ -63,7 +67,7 @@ class BaseMasterData
     }
     protected function queryCount(array $wheres) : int
     {
-        $query = DB::table($this->tableName);
+        $query = $this->queryObject();
         foreach ($wheres as $where) {
             $query->where($where[0], $where[1], $where[2]);
         }
@@ -93,8 +97,12 @@ class BaseMasterData
     }
     public function getById(WebRequest $webRequest):WebResponse
     {
-        $item = $this->doGetById($webRequest->record_id);
+        
         $response = new WebResponse();
+        $item = $this->doGetById($webRequest->record_id);
+        if (is_null($item)) {
+            throw new Error("Data Not Found");
+        }
         $response->item = $item;
         return $response;
     }

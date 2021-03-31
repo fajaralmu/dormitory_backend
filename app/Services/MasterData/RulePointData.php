@@ -25,16 +25,24 @@ class RulePointData extends BaseMasterData
         
         return $response;
     }
+    protected function queryObject()
+    {
+        return RulePoint::with('category');
+    }
 
     public function update(WebRequest $webRequest): bool
     {
         $record = $webRequest->rulePoint;
-        $record->category_id = $record->category->id;
+        if (is_null($record->category_id) && !is_null($record->category)) {
+            $record->category_id = $record->category->id;
+            $record->category = null;
+        }
         return $this->doUpdate($record);
     }
 
     public function doGetById($record_id)
     {
-        return RulePoint::find($record_id)->with('category');
+        $record = RulePoint::with('category')->find((int)$record_id);
+        return $record;
     }
 }

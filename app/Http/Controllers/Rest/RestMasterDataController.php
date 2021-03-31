@@ -32,7 +32,7 @@ class RestMasterDataController extends BaseRestController
             $response = $this->masterDataService->getById($webRequest);
             return $this->jsonResponse($response);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             return $this->errorResponse($th);
         }
     }
@@ -54,7 +54,7 @@ class RestMasterDataController extends BaseRestController
             $response =  $this->masterDataService->update($webRequest);
             return $this->jsonResponse($response);
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             return $this->errorResponse($th);
         }
     }
