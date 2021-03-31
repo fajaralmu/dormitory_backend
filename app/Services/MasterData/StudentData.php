@@ -4,7 +4,9 @@ namespace App\Services\MasterData;
 use Illuminate\Support\Arr;
 use App\Dto\Filter;
 use App\Dto\WebResponse;
+use App\Models\Siswa;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StudentData extends BaseMasterData
@@ -13,60 +15,51 @@ class StudentData extends BaseMasterData
     {
         parent::__construct('siswa', $filter);
     }
-
+    protected function queryObject()
+    {
+        return Siswa::with('user', 'kelas.sekolah');
+    }
     public function list() : WebResponse
     {
-        $filter = $this->filter;
-        $limit = $this->limit();
-        $fieldsFilter = $filter->fieldsFilter;
-        $filter_class = Arr::has($fieldsFilter, 'class_id') &&  $fieldsFilter['class_id']!= "ALL" ? $fieldsFilter['class_id'] : null;
-        $filter_name = Arr::has($fieldsFilter, 'name') ? $fieldsFilter['name'] : '';
-        $offset = $this->offset();
-        $students = DB::select(
-            "select distinct s.nis, s.id, CONCAT(k.level, k.rombel) as class_name,
-            UPPER(sk.nama) as school_name
-            from siswa s 
-            left join kelas k on k.id = s.kelas_id 
-            left join sekolah sk on sk.id = k.sekolah_id
-            left join users u on u.nis = s.nis 
-            where u.name like '%".$filter_name."%'
-            ". (!is_null($filter_class) ? ' and k.id = "'.$filter_class.'"':"") ."
-            order by k.level, k.rombel, u.name asc limit ".$limit." offset ".$offset
-        );
-        $count_result = DB::select(
-            "select count(distinct s.id) as count
-            from siswa s 
-            left join kelas k on k.id = s.kelas_id 
-            left join sekolah sk on sk.id = k.sekolah_id
-            left join users u on u.nis = s.nis 
-            where u.name like '%".$filter_name."%'
-            ". (!is_null($filter_class) ? ' and k.id = "'.$filter_class.'"':"") ."
-           "
-        );
-        if (sizeof($students) > 0) {
-            $this->populateWithUser($students);
+        DB::enableQueryLog();
+        $query = $this->queryObject();
+         
+        $filter_class = $this->getFieldsFilter('class_id') != "ALL" ? $this->getFieldsFilter('class_id'): null;
+        $filter_name = $this->getFieldsFilter('name');
+         
+        $query->join('users', 'users.nis', '=', 'siswa.nis');
+        $query->leftJoin('kelas', 'kelas.id', '=', 'siswa.kelas_id');
+        $query->where('users.name', 'like', '%'.$filter_name.'%');
+        if (!is_null($filter_class)) {
+            $query->where('siswa.kelas_id', '=', $filter_class);
         }
-        $response = new WebResponse();
-        $response->items = $students;
-        $response->totalData = $count_result[0]->count;
-        $response->filter = $filter;
+        // $query->where('kelas.id', '!=', 'null');
+        
+        $query->orderBy('kelas.level', 'asc');
+        $query->orderBy('kelas.rombel', 'asc');
+        $query->orderBy('users.name', 'asc');
+        $queryCount = clone $query;
+        $this->setLimitOffset($query);
+        $students = $query->distinct()->get(['siswa.*']);
+        if (sizeof($students) > 0) {
+            $this->hidePassword($students);
+        }
+        // dd(json_encode(DB::getQueryLog()));
+        $response = $this->generalResponse();
+        $response->items = $students->toArray();
+        $response->totalData = $queryCount->distinct()->count('siswa.id');
+
+        
         return $response;
     }
 
-    private function populateWithUser(array $students)
+    private function hidePassword(Collection $students)
     {
         $nis_array = [];
         foreach ($students as $student) {
-            array_push($nis_array, $student->nis);
+            $student->user = User::forResponse($student->user);
         }
-        $users = User::whereIn('nis', $nis_array)->get();
-        foreach ($students as $student) {
-            foreach ($users as $user) {
-                if ($student->nis == $user->nis) {
-                    $student->user = User::forResponse($user);
-                }
-            }
-        }
+       
     }
 
 }

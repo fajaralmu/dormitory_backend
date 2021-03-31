@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
+use App\Models\Kelas;
 use App\Services\MasterData\StudentData;
 use Illuminate\Support\Facades\DB;
 
@@ -16,14 +17,7 @@ class StudentService
 
     public function getClasses() : WebResponse
     {
-        $classes = DB::select(
-            'select 
-            k.id, 
-            CONCAT(k.level, k.rombel) as name, 
-            UPPER(s.nama) as school_name 
-            from kelas k left join sekolah s on k.sekolah_id = s.id 
-            order by s.nama, k.level, k.rombel'
-        );
+        $classes = Kelas::with('sekolah')->orderBy('level')->orderBy('rombel')->get()->toArray();
         $response = new WebResponse();
         $response->items = $classes;
         return $response;

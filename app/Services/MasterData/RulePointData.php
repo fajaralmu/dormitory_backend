@@ -18,8 +18,8 @@ class RulePointData extends BaseMasterData
         $wheres = array(['name', 'like', '%'.$filterName.'%']);
         $items = $this->queryList($wheres, 'name', 'asc');
         $result_count = $this->queryCount($wheres);
-        $response = new WebResponse();
-
+        
+        $response = $this->generalResponse();
         $response->totalData = $this->total_data = $result_count;
         $response->items = $this->result_list = $items;
         

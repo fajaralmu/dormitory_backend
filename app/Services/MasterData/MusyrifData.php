@@ -3,9 +3,9 @@ namespace App\Services\MasterData;
 
 use App\Dto\Filter;
 use App\Dto\WebResponse;
+use App\Models\Pegawai;
 use App\Models\User;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class MusyrifData extends BaseMasterData
 {
@@ -13,64 +13,48 @@ class MusyrifData extends BaseMasterData
     {
         parent::__construct('pegawai', $filter);
     }
-
+    protected function queryObject()
+    {
+        return Pegawai::with('user');
+    }
     public function list() : WebResponse
     {
-        $limit = $this->limit();
-        $offset = $this->offset();
-        $fieldsFilter = $this->filter->fieldsFilter;
-        $filterName = '';
-        $musyrif_only = false;
-        try {
-            if (Arr::has($fieldsFilter, 'name')) {
-                $filterName = $fieldsFilter['name'];
-            }
-            if (Arr::has($fieldsFilter, 'musyrif_only')) {
-                $musyrif_only = $fieldsFilter['musyrif_only'] ==  true;
-            }
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        $filterName = $this->getFieldsFilter('name');
+        $musyrif_only =$this->getFieldsFilter('musyrif_only') ==  true;
 
         $filterRole = $musyrif_only ? "musyrif_asrama" : "";
         
-        $response = new WebResponse();
-        $employees =  DB::select(
-            "select p.* from pegawai p left 
-             join users u on u.nip = p.nip
-             where (u.name like '%".$filterName."%' or u.email like '%".$filterName."%') 
-             and u.roles like '%".$filterRole."%'
-             order by u.name asc limit ".$limit." offset ".$offset
+        
+        $query = $this->queryObject();
+        $query->join('users', 'users.nip', '=', 'pegawai.nip');
+        $query->where(
+            function ($query) use ($filterName) {
+                $query->orWhere('users.name', 'like', '%'.$filterName.'%');
+                $query->orWhere('users.email', 'like', '%'.$filterName.'%');
+            }
         );
-        $count_result = DB::select(
-            "select count(*) as count from pegawai left 
-            join users u on u.nip = pegawai.nip
-            where (u.name like '%".$filterName."%' or u.email like '%".$filterName."%') 
-            and u.roles like '%".$filterRole."%' 
-            "
-        );
-        if (sizeof($employees) > 0) {
-            $this->populateWithUser($employees);
-        }
-        $response->filter = $this->filter;
-        $response->items = $employees;
-        $response->totalData =  $count_result[0]->count;
+        $query->where('users.roles', 'like', '%'.$filterRole.'%');
+        $queryCount = clone $query;
+        $this->setLimitOffset($query);
+
+        $employees = $query->get(['pegawai.*']);
+        $count_result = $queryCount->count();
+        
+        $this->hidePassword($employees);
+
+        $response = $this->generalResponse();
+        $response->items = $employees->toArray();
+        $response->totalData =  $count_result;
         return $response;
     }
 
-    private function populateWithUser(array $employees)
+    private function hidePassword(Collection $employees)
     {
-        $nip_array = [];
         foreach ($employees as $employee) {
-            array_push($nip_array, $employee->nip);
-        }
-        $users = User::whereIn('nip', $nip_array)->get();
-        foreach ($employees as $employee) {
-            foreach ($users as $user) {
-                if ($employee->nip == $user->nip) {
-                    $employee->user = User::forResponse($user);
-                }
+            if (!is_null($employee->user)) {
+                $employee->user = User::forResponse($employee->user);
             }
         }
+        
     }
 }

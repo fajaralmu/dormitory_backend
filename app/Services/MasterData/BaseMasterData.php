@@ -7,6 +7,8 @@ use App\Dto\WebResponse;
 use App\Models\BaseModel;
 use Error;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 
@@ -26,6 +28,12 @@ class BaseMasterData
             $this->filter = $filter;
         }
     }
+    protected function queryObjectLimitOffset()
+    {
+        $q = $this->queryObject();
+        $this->setLimitOffset($q);
+        return $q;
+    }
     public function limit() :int
     {
         return $this->filter->limit;
@@ -42,6 +50,15 @@ class BaseMasterData
     {
         return DB::table($this->tableName);
     }
+    protected function setLimitOffset($query)
+    {
+        if ($this->offset() > 0) {
+            $query->skip($this->offset());
+        }
+        if ($this->limit() > 0) {
+            $query->take($this->limit());
+        }
+    }
     protected function queryList(array $wheres, string $orderBy = null, string $orderType = 'asc') : array
     {
         $query = $this->queryObject();
@@ -56,13 +73,7 @@ class BaseMasterData
             }
         }
 
-        if ($this->offset() > 0) {
-            $query->skip($this->offset());
-        }
-        
-        if ($this->limit() > 0) {
-            $query->take($this->limit());
-        }
+        $this->setLimitOffset($query);
         return $query->get()->toArray();
     }
     protected function queryCount(array $wheres) : int
@@ -73,6 +84,14 @@ class BaseMasterData
         }
 
         return $query->count();
+    }
+    protected function generalResponse(): WebResponse
+    {
+        $response = new WebResponse();
+        if (isset($this->filter)) {
+            $response->filter = $this->filter;
+        }
+        return $response;
     }
     protected function getFieldsFilter(string $key)
     {
