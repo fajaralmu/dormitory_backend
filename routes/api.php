@@ -31,10 +31,16 @@ Route:: group(['prefix' => 'musyrifmanagement' , 'middleware'=>['auth:api', 'rol
     //RestMusyrifManagementController
     Route::post('employees', 'Rest\RestMusyrifManagementController@employees');
     Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
-    // Route::post('statistic', 'Rest\RestHistoriesController@statistic');
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+     
+});
+Route:: group(['prefix' => 'masterdata' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
+    //RestMusyrifManagementController
+    Route::post('list', 'Rest\RestMasterDataController@list');
+    Route::post('update', 'Rest\RestMasterDataController@update');
+    Route::post('delete', 'Rest\RestMasterDataController@delete');
+    Route::post('getbyid', 'Rest\RestMasterDataController@getbyid');
+    
+     
 });
 Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], function () {
     
@@ -46,5 +52,6 @@ Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'r
     //RestMusyrifManagementController
     Route::post('classes', 'Rest\RestStudentActivityManagementController@classes');
     Route::post('studentlist', 'Rest\RestStudentActivityManagementController@studentlist');
+
     // Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
 });

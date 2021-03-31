@@ -6,13 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
-    
+    public function getId()
+    {
+        $ID = $this->getAttribute('id');
+        // dd($ID);
+        // dd(json_encode($this->getAttributes()));
+        return $this->getAttribute('id');
+    }
     public function getAttributes()
     {
         $attr = $this->attributes;
         if (sizeof($this->fillable) > 0) {
             foreach ($this->fillable as $fill) {
-                $attr[$fill] = $this->$fill;
+                if (!is_null($this->$fill)) {
+                    $attr[$fill] = $this->$fill;
+                }
             }
         }
         // $this->jsonSerialize()

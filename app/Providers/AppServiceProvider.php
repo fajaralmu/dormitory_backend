@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\AccountService;
 use App\Services\ConfigurationService;
+use App\Services\MasterDataService;
 use App\Services\MusyrifManagementService;
 use App\Services\StudentService;
 use Illuminate\Support\Facades\Blade;
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
         $configService = new ConfigurationService();
         $musyrifManagementService = new MusyrifManagementService();
         $studentService = new StudentService();
+        $masterDataService = new MasterDataService();
+        $this->app->bind(MasterDataService::class, function ($app) use ($masterDataService) {
+            return $masterDataService;
+        });
         $this->app->bind(AccountService::class, function ($app) use ($accountService) {
             return $accountService;
         });
