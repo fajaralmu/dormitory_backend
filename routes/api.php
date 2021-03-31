@@ -28,8 +28,7 @@ Route::prefix('account')->group(function () {
    
 });
 Route:: group(['prefix' => 'musyrifmanagement' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
-    //RestMusyrifManagementController
-    Route::post('employees', 'Rest\RestMusyrifManagementController@employees');
+    
     Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
      
 });

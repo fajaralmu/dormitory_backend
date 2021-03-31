@@ -38,6 +38,38 @@ class BaseMasterData
     {
         throw new Exception("NOT IMPLEMENTED");
     }
+    protected function queryList(array $wheres, string $orderBy = null, string $orderType = 'asc') : array
+    {
+        $query = DB::table($this->tableName);
+        foreach ($wheres as $where) {
+            $query->where($where[0], $where[1], $where[2]);
+        }
+        if (!is_null($orderBy)) {
+            if ($orderType == 'asc') {
+                $query->orderBy($orderBy);
+            } else {
+                $query->orderByDesc($orderBy);
+            }
+        }
+
+        if ($this->offset() > 0) {
+            $query->skip($this->offset());
+        }
+        
+        if ($this->limit() > 0) {
+            $query->take($this->limit());
+        }
+        return $query->get()->toArray();
+    }
+    protected function queryCount(array $wheres) : int
+    {
+        $query = DB::table($this->tableName);
+        foreach ($wheres as $where) {
+            $query->where($where[0], $where[1], $where[2]);
+        }
+
+        return $query->count();
+    }
     protected function getFieldsFilter(string $key)
     {
         if (is_null($this->filter) || is_null($this->filter->fieldsFilter)) {
@@ -110,6 +142,8 @@ class BaseMasterData
                 return new StudentData($filter);
             case 'employee':
                 return new MusyrifData($filter);
+            case 'rulepoint':
+                return new RulePointData($filter);
             default:
                 # code...
                 throw new Error("Invalid model name: ".$modelName);

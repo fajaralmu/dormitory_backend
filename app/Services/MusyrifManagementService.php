@@ -13,12 +13,6 @@ use Error;
 define('ROLE_MUSYRIF_ASRAMA', 'musyrif_asrama');
 class MusyrifManagementService
 {
-    public function getUserList(WebRequest $webRequest) : WebResponse
-    {
-         $data = new MusyrifData($webRequest->filter);
-         return $data->list();
-    }
-
     public function activate(WebRequest $request) :WebResponse
     {
         $employee = Pegawai::find($request->employee_id);
