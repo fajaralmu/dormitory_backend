@@ -15,7 +15,12 @@ class RulePointData extends BaseMasterData
     public function list() : WebResponse
     {
         $filterName = $this->getFieldsFilter('name') ?? "";
+        $cat_id = $this->getFieldsFilter('category_id');
+        $filterCategory = !is_null($cat_id) && $cat_id != 'ALL' ? $cat_id : null;
         $wheres = array(['name', 'like', '%'.$filterName.'%']);
+        if (!is_null($filterCategory)) {
+            array_push($wheres, ['category_id', '=', $filterCategory]);
+        }
         $items = $this->queryList($wheres, 'name', 'asc');
         $result_count = $this->queryCount($wheres);
         

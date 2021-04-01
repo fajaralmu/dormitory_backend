@@ -32,7 +32,7 @@ Route:: group(['prefix' => 'musyrifmanagement' , 'middleware'=>['auth:api', 'rol
     Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
      
 });
-Route:: group(['prefix' => 'masterdata' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
+Route:: group(['prefix' => 'masterdata' , 'middleware'=>['auth:api', 'role:admin_asrama,musyrif_asrama']  ], function () {
     //RestMusyrifManagementController
     Route::post('list', 'Rest\RestMasterDataController@list');
     Route::post('update', 'Rest\RestMasterDataController@update');
