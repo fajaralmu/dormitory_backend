@@ -3,6 +3,7 @@ namespace App\Dto;
 
 use App\Models\Category;
 use App\Models\Pegawai;
+use App\Models\PointRecord;
 use App\Models\RulePoint;
 use App\Models\User;
 
@@ -21,4 +22,5 @@ class WebRequest
     //managements
     public Category $category;
     public RulePoint $rulePoint;
+    public PointRecord $pointRecord;
 }

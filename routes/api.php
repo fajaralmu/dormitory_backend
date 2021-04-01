@@ -50,7 +50,7 @@ Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], fun
 Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama']  ], function () {
     //RestMusyrifManagementController
     Route::post('classes', 'Rest\RestStudentActivityManagementController@classes');
-    Route::post('studentlist', 'Rest\RestStudentActivityManagementController@studentlist');
+    Route::post('submitpointrecord', 'Rest\RestStudentActivityManagementController@submitpointrecord');
 
     // Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
 });
