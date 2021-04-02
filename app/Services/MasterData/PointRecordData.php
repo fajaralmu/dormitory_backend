@@ -14,7 +14,7 @@ $ALL = 'ALL';
 class PointRecordData extends BaseMasterData
 {
 
-    public function __construct(Filter $filter)
+    public function __construct(Filter $filter = null)
     {
         parent::__construct('point_records', $filter);
     }
@@ -30,6 +30,7 @@ class PointRecordData extends BaseMasterData
         $query->leftJoin('siswa', 'siswa.id', '=', 'point_records.student_id');
         $query->leftJoin('users', 'users.nis', '=', 'siswa.nis');
         $query->leftJoin('rule_points', 'rule_points.id', '=', 'point_records.point_id');
+        $query->leftJoin('categories', 'categories.id', '=', 'rule_points.category_id');
 
         $filter_day = $this->getFieldsFilter('day');
         $filter_month = $this->getFieldsFilter('month');
@@ -37,6 +38,7 @@ class PointRecordData extends BaseMasterData
         $filter_name = $this->getFieldsFilter('name');
         $filter_point_name = $this->getFieldsFilter('point_name');
         $filter_location = $this->getFieldsFilter('location');
+        $filter_category = $this->getFieldsFilter('category_name');
         
         if (!is_null($filter_day) && $filter_day != 'ALL') {
             $query->where('day', '=', $filter_day);
@@ -55,6 +57,9 @@ class PointRecordData extends BaseMasterData
         }
         if (!is_null($filter_location)) {
             $query->where('location', 'like', '%'.$filter_location.'%');
+        }
+        if (!is_null($filter_category)) {
+            $query->where('categories.name', 'like', '%'.$filter_category.'%');
         }
 
         $queryCount = clone $query;
