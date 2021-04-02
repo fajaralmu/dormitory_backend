@@ -169,6 +169,8 @@ class BaseMasterData
                 return new MusyrifData($filter);
             case 'rulepoint':
                 return new RulePointData($filter);
+            case 'pointrecord':
+                return new PointRecordData($filter);
             default:
                 # code...
                 throw new Error("Invalid model name: ".$modelName);
