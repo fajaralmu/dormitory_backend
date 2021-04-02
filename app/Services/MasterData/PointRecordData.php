@@ -7,6 +7,7 @@ use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\PointRecord;
 use App\Models\User;
+use App\Utils\ObjectUtil;
 use Error;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -34,24 +35,22 @@ class PointRecordData extends BaseMasterData
         $query->leftJoin('rule_points', 'rule_points.id', '=', 'point_records.point_id');
         $query->leftJoin('categories', 'categories.id', '=', 'rule_points.category_id');
 
-        $filter_day = $this->getFieldsFilter('day');
-        $filter_month = $this->getFieldsFilter('month');
-        $filter_year = $this->getFieldsFilter('year');
+        
         $filter_name = $this->getFieldsFilter('name');
         $filter_point_name = $this->getFieldsFilter('point_name');
         $filter_location = $this->getFieldsFilter('location');
         $filter_category = $this->getFieldsFilter('category_name');
         $filter_dropped = $this->getFieldsFilter('dropped');
         
-        if (!is_null($filter_day) && $filter_day != 'ALL') {
-            $query->where('day', '=', $filter_day);
-        }
-        if (!is_null($filter_month) && $filter_month != 'ALL') {
-            $query->where('month', '=', $filter_month);
-        }
-        if (!is_null($filter_year) && $filter_year != '') {
-            $query->where('year', '=', $filter_year);
-        }
+        //period
+        $date_from = ObjectUtil::toDateString($this->filter->day, $this->filter->month, $this->filter->year);
+        $date_to = ObjectUtil::toDateString($this->filter->dayTo, $this->filter->monthTo, $this->filter->yearTo);
+        
+        $date_expression = DB::raw("STR_TO_DATE(concat(point_records.day,'/',point_records.month,'/',point_records.year), '%d/%m/%Y')");
+        
+        $query->where($date_expression, '>=', $date_from);
+        $query->where($date_expression, '<=', $date_to);
+
         if (!is_null($filter_name)) {
             $query->where('users.name', 'like', '%'.$filter_name.'%');
         }

@@ -86,6 +86,11 @@ class ObjectUtil
         return $propName;
     }
 
+    public static function toDateString($day, $month, $year)
+    {
+        return $year.'-'.$month .'-'.$day;
+    }
+
     public static function customPluck($array, $valuePropName, $keyDelim, ...$keys)
     {
         $result = [];
