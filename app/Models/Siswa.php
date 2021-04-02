@@ -46,6 +46,8 @@ class Siswa extends Model
         'is_beasiswa' => 'boolean',
     ];
 
+    protected $point;
+
     protected $dates = ['tanggal_lahir'];
 
     // eager load for related models

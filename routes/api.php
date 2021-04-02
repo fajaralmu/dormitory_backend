@@ -51,6 +51,8 @@ Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'r
     //RestMusyrifManagementController
     Route::post('classes', 'Rest\RestStudentActivityManagementController@classes');
     Route::post('submitpointrecord', 'Rest\RestStudentActivityManagementController@submitpointrecord');
+    Route::post('droppoint', 'Rest\RestStudentActivityManagementController@droppoint');
+
 
     // Route::post('activate', 'Rest\RestMusyrifManagementController@activate');
 });

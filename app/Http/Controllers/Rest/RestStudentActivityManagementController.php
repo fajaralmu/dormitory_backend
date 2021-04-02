@@ -23,6 +23,16 @@ class RestStudentActivityManagementController extends BaseRestController
             return $this->errorResponse($th);
         }
     }
+    public function droppoint(Request $request) : JsonResponse
+    {
+        try {
+            $webRequest = $this->getWebRequest($request);
+            $response = ($this->studentService->dropPoint($webRequest));
+            return parent::jsonResponseAndResendToken($response, $request);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th);
+        }
+    }
     public function submitpointrecord(Request $request) : JsonResponse
     {
         try {
