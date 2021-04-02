@@ -10,7 +10,8 @@ class RulePoint extends BaseModel
 		'name',
         'description',
         'point',
-        'category_id'
+        'category_id',
+        'droppable'
 	];
 
 	protected $id;
@@ -18,6 +19,8 @@ class RulePoint extends BaseModel
     protected $description;
     protected $point;
     protected $category_id;
+    protected $droppable;
+    
     public function category()
     {
         return $this->hasOne(Category::class, 'id', 'category_id');

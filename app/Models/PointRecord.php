@@ -15,6 +15,7 @@ class PointRecord extends BaseModel
         'student_id',
         'point_id',
         'location',
+        'dropped_at'
 	];
 
 	protected $id;
@@ -26,6 +27,8 @@ class PointRecord extends BaseModel
     protected $student_id;
     protected $point_id;
     protected $location;
+    protected $dropped_at;
+
     public function rule_point()
     {
         return $this->hasOne(RulePoint::class, 'id', 'point_id');

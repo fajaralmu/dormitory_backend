@@ -9,6 +9,7 @@ use App\Models\PointRecord;
 use App\Models\User;
 use Error;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 $ALL = 'ALL';
 class PointRecordData extends BaseMasterData
@@ -26,6 +27,7 @@ class PointRecordData extends BaseMasterData
     
     public function list(): WebResponse
     {
+        DB::enableQueryLog();
         $query = $this->queryObject();
         $query->leftJoin('siswa', 'siswa.id', '=', 'point_records.student_id');
         $query->leftJoin('users', 'users.nis', '=', 'siswa.nis');
@@ -39,6 +41,7 @@ class PointRecordData extends BaseMasterData
         $filter_point_name = $this->getFieldsFilter('point_name');
         $filter_location = $this->getFieldsFilter('location');
         $filter_category = $this->getFieldsFilter('category_name');
+        $filter_dropped = $this->getFieldsFilter('dropped');
         
         if (!is_null($filter_day) && $filter_day != 'ALL') {
             $query->where('day', '=', $filter_day);
@@ -61,6 +64,13 @@ class PointRecordData extends BaseMasterData
         if (!is_null($filter_category)) {
             $query->where('categories.name', 'like', '%'.$filter_category.'%');
         }
+        if (!is_null($filter_dropped) && $filter_dropped != 'ALL') {
+            if ($filter_dropped == 'true') {
+                $query->whereNotNull('dropped_at');
+            } elseif ($filter_dropped == 'false') {
+                $query->whereNull('dropped_at');
+            }
+        }
 
         $queryCount = clone $query;
         
@@ -76,6 +86,9 @@ class PointRecordData extends BaseMasterData
         $response = $this->generalResponse();
         $response->items = $result_list->toArray();
         $response->totalData = $queryCount->count();
+
+        // echo(json_encode(DB::getQueryLog()));
+
         return $response;
     }
     private function hidePassword(Collection $items)
