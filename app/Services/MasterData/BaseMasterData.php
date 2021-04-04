@@ -137,7 +137,7 @@ class BaseMasterData
     {
         return DB::table($this->tableName)->where('id', '=', $record_id)->first();
     }
-    public function doDeleteById($record_id)
+    public function doDeleteById($record_id) : bool
     {
         return DB::table($this->tableName)->where('id', '=', $record_id)->delete($record_id);
     }

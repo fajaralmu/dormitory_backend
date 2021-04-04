@@ -29,6 +29,11 @@ class PointRecord extends BaseModel
     protected $location;
     protected $dropped_at;
 
+    
+    public function pictures()
+    {
+        return $this->hasMany(Pictures::class, 'point_record_id', 'id');
+    }
     public function rule_point()
     {
         return $this->hasOne(RulePoint::class, 'id', 'point_id');

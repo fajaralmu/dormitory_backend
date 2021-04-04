@@ -23,4 +23,6 @@ class WebRequest
     public Category $category;
     public RulePoint $rulePoint;
     public PointRecord $pointRecord;
+
+    public ?AttachmentInfo $attachmentInfo;
 }

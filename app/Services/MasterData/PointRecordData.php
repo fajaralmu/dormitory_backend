@@ -5,8 +5,10 @@ namespace App\Services\MasterData;
 use App\Dto\Filter;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
+use App\Models\Pictures;
 use App\Models\PointRecord;
 use App\Models\User;
+use App\Utils\FileUtil;
 use App\Utils\ObjectUtil;
 use Error;
 use Illuminate\Support\Collection;
@@ -102,6 +104,21 @@ class PointRecordData extends BaseMasterData
     }
     protected function queryObject()
     {
-        return PointRecord::with('student', 'rule_point.category');
+        return PointRecord::with('student', 'rule_point.category', 'pictures');
+    }
+
+    public function doDeleteById($record_id) : bool
+    {
+        $pictures = Pictures::where('point_record_id', '=', $record_id)->get();
+        
+        if (!is_null($pictures)) {
+            foreach ($pictures as $picture) {
+                $file_deleted = FileUtil::delete($picture->name, 'POINT_RECORD');
+                // if ($file_deleted) {
+                    $picture->delete();
+                // }
+            }
+        }
+        return parent::doDeleteById($record_id);
     }
 }

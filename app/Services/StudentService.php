@@ -4,11 +4,11 @@ namespace App\Services;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\Kelas;
+use App\Models\Pictures;
 use App\Models\PointRecord;
-use App\Services\MasterData\StudentData;
+use App\Utils\FileUtil;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class StudentService
 {
@@ -27,6 +27,7 @@ class StudentService
             DB::table('point_records')->where('id', '=', $model->id)->update(['dropped_at'=> null]);
         }
         $response = new WebResponse();
+        $response->item = PointRecord::find($model->id);
         return $response;
     }
     public function submitPointRecord(WebRequest $webRequest) : WebResponse
@@ -34,8 +35,15 @@ class StudentService
         $model = $webRequest->pointRecord;
         $model->save();
         
+        if (isset($webRequest->attachmentInfo) && !is_null($webRequest->attachmentInfo)) {
+            $picture = new Pictures();
+            $picture->point_record_id = $model->id;
+            $picture->name = FileUtil::writeBase64File($webRequest->attachmentInfo->url, 'POINT_RECORD');
+            $picture->save();
+        }
+
         $response = new WebResponse();
-        $response->item = PointRecord::with('rule_point.category', 'student')->find($model->id);
+        $response->item = PointRecord::with('rule_point.category', 'pictures', 'student')->find($model->id);
         return $response;
     }
 
