@@ -104,7 +104,7 @@ class PointRecordData extends BaseMasterData
     }
     protected function queryObject()
     {
-        return PointRecord::with('student', 'rule_point.category', 'pictures');
+        return PointRecord::with('student.kelas.sekolah', 'rule_point.category', 'pictures');
     }
 
     public function doDeleteById($record_id) : bool
