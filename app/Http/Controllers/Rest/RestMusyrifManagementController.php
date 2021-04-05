@@ -21,7 +21,7 @@ class RestMusyrifManagementController extends BaseRestController
         try {
             $webRequest = $this->getWebRequest($request);
             $response  = $this->musyrifManagemenetService->activate($webRequest);
-            return parent::jsonResponseAndResendToken($response, $request);
+            return parent::jsonResponseAndResendToken($response);
         } catch (Throwable $th) {
             return parent::errorResponse($th);
         }

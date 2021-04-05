@@ -7,10 +7,10 @@ use App\Dto\WebResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Utils\ObjectUtil;
-use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class BaseRestController extends Controller {
 
@@ -33,9 +33,9 @@ class BaseRestController extends Controller {
         return $result;
     }
 
-    protected function jsonResponseAndResendToken(WebResponse $response, Request $request) : JsonResponse
+    protected function jsonResponseAndResendToken(WebResponse $response) : JsonResponse
     {
-        return $this->jsonResponse($response, $this->resentToken($request));
+        return $this->jsonResponse($response, $this->resentToken());
     }
 
     protected function webResponse($code = null, $message = null)
@@ -78,10 +78,14 @@ class BaseRestController extends Controller {
     {
         return ['api_token'=>$api_token, 'Access-Control-Expose-Headers'=>'api_token'];
     }
-    protected function resentToken(Request $request)
+    protected function resentToken()
     {
-        $auth = $request->header('Authorization');
-        $token =  Str::replaceFirst('Bearer ', "", $auth);
-        return ['api_token'=>$token, 'Access-Control-Expose-Headers'=>'api_token'];
+        try {
+            $token = JWTAuth::getToken();
+            return ['api_token'=>$token, 'Access-Control-Expose-Headers'=>'api_token'];
+        } catch (Throwable $th) {
+            return [];
+        }
+        
     }
 }

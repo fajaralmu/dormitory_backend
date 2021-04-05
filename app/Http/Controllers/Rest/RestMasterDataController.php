@@ -19,7 +19,7 @@ class RestMasterDataController extends BaseRestController
         try {
             $webRequest  = $this->getWebRequest($request);
             $response = $this->masterDataService->list($webRequest);
-            return parent::jsonResponseAndResendToken($response, $request);
+            return parent::jsonResponseAndResendToken($response);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->errorResponse($th);
@@ -30,7 +30,7 @@ class RestMasterDataController extends BaseRestController
         try {
             $webRequest  = $this->getWebRequest($request);
             $response = $this->masterDataService->getById($webRequest);
-            return parent::jsonResponseAndResendToken($response, $request);
+            return parent::jsonResponseAndResendToken($response);
         } catch (\Throwable $th) {
             throw $th;
             return $this->errorResponse($th);
@@ -41,7 +41,7 @@ class RestMasterDataController extends BaseRestController
         try {
             $webRequest  = $this->getWebRequest($request);
             $response = $this->masterDataService->delete($webRequest);
-            return parent::jsonResponseAndResendToken($response, $request);
+            return parent::jsonResponseAndResendToken($response);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->errorResponse($th);
@@ -52,7 +52,7 @@ class RestMasterDataController extends BaseRestController
         try {
             $webRequest  = $this->getWebRequest($request);
             $response =  $this->masterDataService->update($webRequest);
-            return parent::jsonResponseAndResendToken($response, $request);
+            return parent::jsonResponseAndResendToken($response);
         } catch (\Throwable $th) {
             // throw $th;
             return $this->errorResponse($th);

@@ -29,7 +29,8 @@ class RestAccountController extends BaseRestController
             $token = JWTAuth::getToken();
             $apy = JWTAuth::getPayload($token)->toArray();
         } catch (Throwable $th) {
-
+            //
+            $apy = $th->getMessage();
         }
         try {
             $response = new WebResponse();
@@ -40,7 +41,7 @@ class RestAccountController extends BaseRestController
             if ($response->loggedIn) {
                 $response->user = User::forResponse($request->user());
             }
-            return parent::jsonResponseAndResendToken($response, $request);
+            return parent::jsonResponseAndResendToken($response);
         } catch (Throwable $th) {
             return parent::errorResponse($th);
         }
@@ -50,10 +51,9 @@ class RestAccountController extends BaseRestController
     {
         // $payload = parent::getWebRequest($request);
         try {
-            $api_token = $this->account_service->loginAttemp($request);
-            $user = $request->user();
+            $api_token = $this->account_service->login($request);
             $response = new WebResponse();
-            $response->user = User::forResponse($user);
+            $response->user = User::forResponse($request->user());
             return parent::jsonResponse($response, $this->headerApiToken($api_token));
         } catch (Throwable $th) {
             return parent::errorResponse($th);
