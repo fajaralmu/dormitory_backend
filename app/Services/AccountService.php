@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Tymon\JWTAuth\Providers\Auth\Illuminate;
 
 class AccountService
 {
@@ -42,6 +43,7 @@ class AccountService
 
     public function logout(User $requestUser) : WebResponse
     {
+        Auth::logout();
         $user = User::find($requestUser->id);
         $user->api_token = null;
         $user->save();
@@ -96,23 +98,12 @@ class AccountService
         if (is_null($dbUser)) {
             throw new Exception("Email : $email not found");
         }
-        if (Auth::attempt($cred)) {
-            
-            $token = Str::random(60);
-            $hashedToken = hash('sha256', $token);
-            $user = $this->updateApiToken($email, $hashedToken);
-            return $hashedToken;
+        $token = Auth::attempt($cred);
+        if ($token) {
+            return $token;
         } else {
             throw new Exception("Login Failed: password invalid");
         }
-    }
-
-    private function updateApiToken(string $email, string $token)
-    {
-        $user = User::where('email', $email)->first();
-        $user->api_token = $token;
-        $user->save();
-        return $user;
     }
 
     public function resetUserPassword(WebRequest $request) : WebResponse

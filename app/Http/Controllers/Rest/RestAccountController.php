@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Rest;
 
-use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\User;
 use App\Services\AccountService;
 use App\Services\ConfigurationService;
-use App\Services\MasterDataService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Throwable;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RestAccountController extends BaseRestController
 {
@@ -25,8 +24,16 @@ class RestAccountController extends BaseRestController
     }
     public function requestId(Request $request) : JsonResponse
     {
+        $apy = null;
+        try {
+            $token = JWTAuth::getToken();
+            $apy = JWTAuth::getPayload($token)->toArray();
+        } catch (Throwable $th) {
+
+        }
         try {
             $response = new WebResponse();
+            $response->item = $apy;
             $response->message = Str::random(10);
             $response->profile = $this->configurationService->getApplicationProfile();
             $response->loggedIn = is_null($request->user()) == false;

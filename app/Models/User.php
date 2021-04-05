@@ -14,11 +14,14 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
+// use Illuminate\Foundation\Auth\User as Authenticatables;
 class User extends BaseModel implements
     AuthenticatableContract,
     AuthorizableContract,
-    CanResetPasswordContract
+    CanResetPasswordContract,
+    JWTSubject
 {
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail, Notifiable;
     
@@ -123,8 +126,7 @@ class User extends BaseModel implements
         }
         out("NO ROLE");
         return false;
-        // return in_array($role, [$this->attributes['role']]);
-        // return in_array($role, $this->roles);
+         
     }
 
     public function addRole(string $role)
@@ -155,6 +157,23 @@ class User extends BaseModel implements
         $this->roles  = json_encode($user_roles);
         $this->setAttribute('roles', $user_roles);
         $this->save();
+    }
+
+    public function getJWTIdentifier()
+    {
+        $id = $this->getAuthIdentifier();
+        out("getJWTIdentifier>> ".$id." this->id: ".$this->id);
+        return $id??$this->id;
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
     public static function forResponse(User $u) : User

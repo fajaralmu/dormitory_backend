@@ -7,6 +7,7 @@ use App\Dto\WebResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Utils\ObjectUtil;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
