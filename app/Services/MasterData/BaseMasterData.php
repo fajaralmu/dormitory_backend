@@ -135,7 +135,7 @@ class BaseMasterData
 
     public function doGetById($record_id)
     {
-        return DB::table($this->tableName)->where('id', '=', $record_id)->first();
+        return $this->queryObject()->where('id', '=', $record_id)->first();
     }
     public function doDeleteById($record_id) : bool
     {
