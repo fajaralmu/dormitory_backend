@@ -50,6 +50,19 @@ class StudentService
     public function submitMedicalRecord(WebRequest $webRequest) : WebResponse
     {
         $model = $webRequest->medicalRecord;
+
+        $existing = MedicalRecords::where([
+            'day' => $model->day,
+            'month' => $model->month,
+            'year' => $model->year,
+            'student_id' => $model->student_id
+        ])->get();
+        if (count($existing) > 0) {
+            foreach ($existing as $ex) {
+                $ex->delete();
+            }
+        }
+
         $model->save();
         $response = new WebResponse();
         $response->item = MedicalRecords::with('student')->find($model->id);
