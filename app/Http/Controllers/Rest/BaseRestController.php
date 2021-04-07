@@ -82,7 +82,8 @@ class BaseRestController extends Controller {
     {
         try {
             $token = JWTAuth::getToken();
-            return ['api_token'=>$token, 'Access-Control-Expose-Headers'=>'api_token'];
+            $refreshed = JWTAuth::refresh($token);
+            return ['api_token'=>$refreshed, 'Access-Control-Expose-Headers'=>'api_token'];
         } catch (Throwable $th) {
             return [];
         }

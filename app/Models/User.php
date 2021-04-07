@@ -173,7 +173,11 @@ class User extends BaseModel implements
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        out("getJWTCustomClaims");
+        $milis = round(microtime(true) * 1000);
+        return [
+            // 'iatssss' => $milis
+        ];
     }
 
     public static function forResponse(User $u) : User

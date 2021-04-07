@@ -4,12 +4,15 @@ namespace App\Services;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Support\Utils;
 
-class AccountService
+class AuthService
 {
    
     // public function register(WebRequest $request) : WebResponse
@@ -47,7 +50,9 @@ class AccountService
         if ($userCount < 1) {
             throw new Exception("Email : $email not found");
         }
-        $token = Auth::attempt($cred);
+        
+        $token = JWTAuth::customClaims(['key' => "VALUE"])->attempt($cred);
+        // $token = auth()->attempt($cred);
         if ($token) {
             return $token;
         } else {

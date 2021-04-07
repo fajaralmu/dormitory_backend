@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\AccountService;
+use App\Services\AuthService;
 use App\Services\ConfigurationService;
 use App\Services\MasterDataService;
 use App\Services\MusyrifManagementService;
@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $accountService = new AccountService();
+        $authService = new AuthService();
         $configService = new ConfigurationService();
         $musyrifManagementService = new MusyrifManagementService();
         $studentService = new StudentService();
@@ -29,8 +29,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MasterDataService::class, function ($app) use ($masterDataService) {
             return $masterDataService;
         });
-        $this->app->bind(AccountService::class, function ($app) use ($accountService) {
-            return $accountService;
+        $this->app->bind(AuthService::class, function ($app) use ($authService) {
+            return $authService;
         });
         $this->app->bind(StudentService::class, function ($app) use ($studentService) {
             return $studentService;

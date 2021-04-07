@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Rest;
 
 use App\Dto\WebResponse;
 use App\Models\User;
-use App\Services\AccountService;
+use App\Services\AuthService;
 use App\Services\ConfigurationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,12 +14,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RestAccountController extends BaseRestController
 {
-    private AccountService $account_service;
+    private AuthService $authService;
     private ConfigurationService $configurationService;
      
-    public function __construct(AccountService $account_service, ConfigurationService $configurationService)
+    public function __construct(AuthService $authService, ConfigurationService $configurationService)
     {
-        $this->account_service = $account_service;
+        $this->authService = $authService;
         $this->configurationService = $configurationService;
     }
     public function requestId(Request $request) : JsonResponse
@@ -27,7 +27,8 @@ class RestAccountController extends BaseRestController
         $apy = null;
         try {
             $token = JWTAuth::getToken();
-            $apy = JWTAuth::getPayload($token)->toArray();
+            out("TOKEN: ".$token);
+            $apy = JWTAuth::getPayload()->toArray();
         } catch (Throwable $th) {
             //
             $apy = $th->getMessage();
@@ -51,7 +52,7 @@ class RestAccountController extends BaseRestController
     {
         // $payload = parent::getWebRequest($request);
         try {
-            $api_token = $this->account_service->login($request);
+            $api_token = $this->authService->login($request);
             $response = new WebResponse();
             $response->user = User::forResponse($request->user());
             return parent::jsonResponse($response, $this->headerApiToken($api_token));
@@ -62,8 +63,7 @@ class RestAccountController extends BaseRestController
     public function logout(Request $request) : JsonResponse
     {
         try {
-            $response = $this->account_service->logout($request->user());
-            // $response->user = null;
+            $response = $this->authService->logout($request->user());
             return parent::jsonResponse($response);
         } catch (Throwable $th) {
             return parent::errorResponse($th);
@@ -73,7 +73,7 @@ class RestAccountController extends BaseRestController
     // {
     //     try {
     //         $payload = parent::getWebRequest($request);
-    //         $response = $this->account_service->register($payload);
+    //         $response = $this->authService->register($payload);
            
     //         return parent::jsonResponse($response);
     //     } catch (Throwable $th) {
