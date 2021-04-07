@@ -7,14 +7,10 @@ use App\Dto\WebResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Utils\ObjectUtil;
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Throwable;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Tymon\JWTAuth\Claims\Audience;
 use Tymon\JWTAuth\Claims\Expiration;
-use Tymon\JWTAuth\Claims\Factory;
 use Tymon\JWTAuth\Claims\IssuedAt;
 use Tymon\JWTAuth\Claims\Issuer;
 use Tymon\JWTAuth\Claims\JwtId;
@@ -96,26 +92,32 @@ class BaseRestController extends Controller
     protected function resentToken()
     {
         try {
-            $token = JWTAuth::getToken();
-            $payload_old  = JWTAuth::getPayload($token);
-            $classMap = [
-                'aud' => new Audience($payload_old->get('aud')),// Audience::class,
-                'exp' => new Expiration(Utils::now()->addMinutes(60)->getTimestamp()),
-                'iat' => new IssuedAt($payload_old->get('iat')),// IssuedAt::class,
-                'iss' => new Issuer($payload_old->get('iss')),//Issuer::class,
-                'jti' => new JwtId($payload_old->get('jti')),// JwtId::class,
-                'nbf' => new NotBefore($payload_old->get('nbf')),// NotBefore::class,
-                'sub' => new Subject($payload_old->get('sub'))//Subject::class,
-            ];
-            $newClaims = new ClaimCollection($classMap);
-             
-            $payload = new Payload($newClaims, new PayloadValidator());
-            $new_token = JWTAuth::encode($payload);
+           
+            $new_token = JWTAuth::encode($this->newJwtPayload());
             return ['api_token'=>$new_token, 'Access-Control-Expose-Headers'=>'api_token'];
         } catch (Throwable $th) {
             out("ERROR Refreshing TOKEN: ". $th->getMessage());
             return [];
         }
         
+    }
+
+    private function newJwtPayload() : Payload
+    {
+        $token = JWTAuth::getToken();
+        $payload_old  = JWTAuth::getPayload($token);
+        $classMap = [
+            'aud' => new Audience($payload_old->get('aud')),// Audience::class,
+            //TODO: get TTL from env('JWT_TTL', 60)
+            'exp' => new Expiration(Utils::now()->addMinutes(60)->getTimestamp()),
+            'iat' => new IssuedAt($payload_old->get('iat')),// IssuedAt::class,
+            'iss' => new Issuer($payload_old->get('iss')),//Issuer::class,
+            'jti' => new JwtId($payload_old->get('jti')),// JwtId::class,
+            'nbf' => new NotBefore($payload_old->get('nbf')),// NotBefore::class,
+            'sub' => new Subject($payload_old->get('sub'))//Subject::class,
+        ];
+        $newClaims = new ClaimCollection($classMap);
+         
+        return new Payload($newClaims, new PayloadValidator());
     }
 }

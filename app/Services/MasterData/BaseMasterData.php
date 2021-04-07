@@ -42,7 +42,7 @@ class BaseMasterData
     }
     public function list():WebResponse
     {
-        throw new Exception("NOT IMPLEMENTED");
+        throw new Exception("list() NOT IMPLEMENTED");
     }
     protected function queryObject()
     {
@@ -171,6 +171,8 @@ class BaseMasterData
                 return new RulePointData($filter);
             case 'pointrecord':
                 return new PointRecordData($filter);
+            case 'medicalrecords':
+                return new MedicalRecordData($filter);
             default:
                 # code...
                 throw new Error("Invalid model name: ".$modelName);

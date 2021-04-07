@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\Kelas;
+use App\Models\MedicalRecords;
 use App\Models\Pictures;
 use App\Models\PointRecord;
 use App\Utils\FileUtil;
@@ -44,6 +45,14 @@ class StudentService
 
         $response = new WebResponse();
         $response->item = PointRecord::with('rule_point.category', 'pictures', 'student')->find($model->id);
+        return $response;
+    }
+    public function submitMedicalRecord(WebRequest $webRequest) : WebResponse
+    {
+        $model = $webRequest->medicalRecord;
+        $model->save();
+        $response = new WebResponse();
+        $response->item = MedicalRecords::with('student')->find($model->id);
         return $response;
     }
 

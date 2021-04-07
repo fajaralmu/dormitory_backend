@@ -44,4 +44,16 @@ class RestStudentActivityManagementController extends BaseRestController
             return $this->errorResponse($th);
         }
     }
+
+    public function submitmedicalrecord(Request $request) : JsonResponse
+    {
+        try {
+            $webRequest = $this->getWebRequest($request);
+            $response = $this->studentService->submitMedicalRecord($webRequest);
+            return parent::jsonResponseAndResendToken($response);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->errorResponse($th);
+        }
+    }
 }

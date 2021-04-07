@@ -2,6 +2,7 @@
 namespace App\Dto;
 
 use App\Models\Category;
+use App\Models\MedicalRecords;
 use App\Models\Pegawai;
 use App\Models\PointRecord;
 use App\Models\RulePoint;
@@ -23,6 +24,7 @@ class WebRequest
     public Category $category;
     public RulePoint $rulePoint;
     public PointRecord $pointRecord;
+    public MedicalRecords $medicalRecord;
 
     public ?AttachmentInfo $attachmentInfo;
 }
