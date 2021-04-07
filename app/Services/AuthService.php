@@ -51,7 +51,7 @@ class AuthService
             throw new Exception("Email : $email not found");
         }
         
-        $token = JWTAuth::customClaims(['key' => "VALUE"])->attempt($cred);
+        $token = JWTAuth::customClaims(['key' => "VALUE", 'jti' => $email])->attempt($cred);
         // $token = auth()->attempt($cred);
         if ($token) {
             return $token;

@@ -7,12 +7,27 @@ use App\Dto\WebResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Utils\ObjectUtil;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Throwable;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Tymon\JWTAuth\Claims\Audience;
+use Tymon\JWTAuth\Claims\Expiration;
+use Tymon\JWTAuth\Claims\Factory;
+use Tymon\JWTAuth\Claims\IssuedAt;
+use Tymon\JWTAuth\Claims\Issuer;
+use Tymon\JWTAuth\Claims\JwtId;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Payload;
+use Tymon\JWTAuth\Support\Utils;
+use Tymon\JWTAuth\Validators\PayloadValidator;
+use Tymon\JWTAuth\Claims\Collection as ClaimCollection;
+use Tymon\JWTAuth\Claims\NotBefore;
+use Tymon\JWTAuth\Claims\Subject;
 
-class BaseRestController extends Controller {
+class BaseRestController extends Controller
+{
 
     public function __construct()
     {
@@ -82,9 +97,23 @@ class BaseRestController extends Controller {
     {
         try {
             $token = JWTAuth::getToken();
-            $refreshed = JWTAuth::refresh($token);
-            return ['api_token'=>$refreshed, 'Access-Control-Expose-Headers'=>'api_token'];
+            $payload_old  = JWTAuth::getPayload($token);
+            $classMap = [
+                'aud' => new Audience($payload_old->get('aud')),// Audience::class,
+                'exp' => new Expiration(Utils::now()->addMinutes(60)->getTimestamp()),
+                'iat' => new IssuedAt($payload_old->get('iat')),// IssuedAt::class,
+                'iss' => new Issuer($payload_old->get('iss')),//Issuer::class,
+                'jti' => new JwtId($payload_old->get('jti')),// JwtId::class,
+                'nbf' => new NotBefore($payload_old->get('nbf')),// NotBefore::class,
+                'sub' => new Subject($payload_old->get('sub'))//Subject::class,
+            ];
+            $newClaims = new ClaimCollection($classMap);
+             
+            $payload = new Payload($newClaims, new PayloadValidator());
+            $new_token = JWTAuth::encode($payload);
+            return ['api_token'=>$new_token, 'Access-Control-Expose-Headers'=>'api_token'];
         } catch (Throwable $th) {
+            out("ERROR Refreshing TOKEN: ". $th->getMessage());
             return [];
         }
         
