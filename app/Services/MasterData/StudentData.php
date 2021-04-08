@@ -26,9 +26,9 @@ class StudentData extends BaseMasterData
         DB::enableQueryLog();
         $query = $this->queryObject();
          
-        $filter_class = $this->getFieldsFilter('class_id') != "ALL" ? $this->getFieldsFilter('class_id'): null;
+        $filter_class = !is_null($this->getFieldsFilter('class_id')) && $this->getFieldsFilter('class_id') != "ALL" ? $this->getFieldsFilter('class_id'): null;
         $filter_name = $this->getFieldsFilter('name');
-        $with_point_record = $this->getFieldsFilter('with_point_record'); 
+        $with_point_record = $this->getFieldsFilter('with_point_record');
 
         $query->leftJoin('users', 'users.nis', '=', 'siswa.nis');
         $query->leftJoin('kelas', 'kelas.id', '=', 'siswa.kelas_id');

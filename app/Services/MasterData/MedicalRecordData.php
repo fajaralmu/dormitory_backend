@@ -5,6 +5,7 @@ namespace App\Services\MasterData;
 use App\Dto\Filter;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
+use App\Models\MedicalRecords;
 use App\Models\PointRecord;
 use Error;
 
@@ -17,7 +18,7 @@ class MedicalRecordData extends BaseMasterData
 
     protected function queryObject()
     {
-        return PointRecord::with('student');
+        return MedicalRecords::with('student');
     }
 
     public function monthlyList(): array
