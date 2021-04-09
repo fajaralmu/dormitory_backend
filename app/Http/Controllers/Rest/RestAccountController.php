@@ -63,7 +63,7 @@ class RestAccountController extends BaseRestController
     public function logout(Request $request) : JsonResponse
     {
         try {
-            $response = $this->authService->logout($request->user());
+            $response = $this->authService->logout();
             return parent::jsonResponse($response);
         } catch (Throwable $th) {
             return parent::errorResponse($th);

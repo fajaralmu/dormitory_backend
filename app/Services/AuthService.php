@@ -4,13 +4,11 @@ namespace App\Services;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Support\Utils;
+use Tymon\JWTAuth\Facades\JWTAuth; 
 
 class AuthService
 {
@@ -27,12 +25,9 @@ class AuthService
     //     return $response;
     // }
 
-    public function logout(User $requestUser) : WebResponse
+    public function logout() : WebResponse
     {
-        Auth::logout();
-        $user = User::find($requestUser->id);
-        $user->api_token = null;
-        $user->save();
+        JWTAuth::invalidate(JWTAuth::getToken());
         $response = new WebResponse();
         return $response;
     }
@@ -51,7 +46,10 @@ class AuthService
             throw new Exception("Email : $email not found");
         }
         
-        $token = JWTAuth::customClaims(['key' => "VALUE", 'jti' => $email])->attempt($cred);
+        $token = JWTAuth::customClaims([
+            'key' => "VALUE"
+            // , 'jti' => $email.Str::random(50)
+            ])->attempt($cred);
         // $token = auth()->attempt($cred);
         if ($token) {
             return $token;
