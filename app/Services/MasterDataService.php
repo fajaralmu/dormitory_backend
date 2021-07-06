@@ -7,6 +7,7 @@ use App\Dto\WebResponse;
 use App\Services\MasterData\BaseMasterData;
 use Error;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class MasterDataService
 {
@@ -34,11 +35,14 @@ class MasterDataService
     {
         $modelName = $webRequest->modelName;
         $data = BaseMasterData::getInstance($modelName);
-        $updated = $data->update($webRequest);
-        if ($updated) {
+        try {
+            $updated = $data->update($webRequest);
             return new WebResponse();
+        } catch (Throwable $th) {
+            throw new Error("Update record failed: ".$th->getMessage());
         }
-        throw new Error("Update record failed");
+        
+        
     }
 
      
