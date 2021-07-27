@@ -43,6 +43,7 @@ class PointRecordData extends BaseMasterData
         $filter_location = $this->getFieldsFilter('location');
         $filter_category = $this->getFieldsFilter('category_name');
         $filter_dropped = $this->getFieldsFilter('dropped');
+        $filter_class = $this->getFieldsFilter('class_id');
         
         //period
         $date_from = ObjectUtil::toDateString($this->filter->day, $this->filter->month, $this->filter->year);
@@ -64,6 +65,9 @@ class PointRecordData extends BaseMasterData
         }
         if (!is_null($filter_category)) {
             $query->where('categories.name', 'like', '%'.$filter_category.'%');
+        }
+        if (!is_null($filter_class) && $filter_class != 'ALL') {
+            $query->where('siswa.kelas_id', $filter_class);
         }
         if (!is_null($filter_dropped) && $filter_dropped != 'ALL') {
             if ($filter_dropped == 'true') {

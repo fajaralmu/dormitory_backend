@@ -51,13 +51,15 @@ Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], fun
     Route::post('requestid', [RestAccountController::class, 'requestId']);
     
 });
-Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama']  ], function () {
+Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama,admin_asrama']  ], function () {
     //RestMusyrifManagementController
     Route::post('classes', [RestStudentActivityManagementController::class, 'classes']);
+    Route::post('rulecategories', [RestStudentActivityManagementController::class, 'rulecategories']);
     Route::post('submitpointrecord', [RestStudentActivityManagementController::class, 'submitpointrecord']);
     Route::post('submitmedicalrecord', [RestStudentActivityManagementController::class, 'submitmedicalrecord']);
     Route::post('monthlymedicalrecord', [RestStudentActivityManagementController::class, 'monthlymedicalrecord']);
-    Route::post('droppoint', [RestStudentActivityManagementController::class, 'droppoint']);
+    
  
 });
+
 //

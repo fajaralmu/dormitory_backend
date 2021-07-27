@@ -3,12 +3,16 @@ namespace App\Services;
 
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
+use App\Models\Category;
 use App\Models\Kelas;
 use App\Models\MedicalRecords;
 use App\Models\Pictures;
 use App\Models\PointRecord;
+use App\Models\RulePoint;
 use App\Utils\FileUtil;
 use Exception;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StudentService
@@ -16,11 +20,13 @@ class StudentService
     public function dropPoint(WebRequest $webRequest) : WebResponse
     {
         $model = $webRequest->pointRecord;
-        $record = PointRecord::find($model->id);
+        $record = PointRecord::with('rule_point')->find($model->id);
         if (is_null($record)) {
             throw new Exception("Data not found");
         }
-        
+        if (!$record->rule_point->droppable) {
+            throw new Exception("Cannot drop this item");
+        }
         if (!is_null($model->dropped_at)) {
             $record->dropped_at = $model->dropped_at = explode('.', $model->dropped_at)[0];
             $record->save();
@@ -76,4 +82,35 @@ class StudentService
         $response->items = $classes;
         return $response;
     }
+
+    public function getRuleCategories() : WebResponse
+    {
+        $points = RulePoint::with('category')->get();
+        $response = new WebResponse();
+        $response->items =  $this->mapRuleAndCategories($points);
+        return $response;
+    }
+
+    private function mapRuleAndCategories(Collection $points_collection):array
+    {
+        $points = $points_collection->toArray();
+        $result = array();
+        $map = array();
+        foreach ($points as $point) {
+            $category = Arr::get($point, 'category');
+            $id = Arr::get($category, 'id');
+            
+            if (!isset($map[$id])) {
+                $category['points'] = [];
+                $map[$id] = $category;
+            }
+            unset($point['category']);
+            array_push($map[$id]['points'], $point);
+        }
+        foreach ($map as $id => $category) {
+            array_push($result, $category);
+        }
+        return $result;
+    }
+
 }

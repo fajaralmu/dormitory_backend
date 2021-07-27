@@ -15,6 +15,15 @@ class RestStudentActivityManagementController extends BaseRestController
     {
         $this->studentService = $studentService;
     }
+    public function rulecategories(Request $request) :JsonResponse
+    {
+        try {
+            $response = ($this->studentService->getRuleCategories());
+            return parent::jsonResponseAndResendToken($response);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th);
+        }
+    }
     public function classes(Request $request) : JsonResponse
     {
         try {
