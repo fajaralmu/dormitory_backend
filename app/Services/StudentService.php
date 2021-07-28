@@ -10,6 +10,7 @@ use App\Models\Pictures;
 use App\Models\PointRecord;
 use App\Models\RulePoint;
 use App\Utils\FileUtil;
+use Error;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -37,10 +38,17 @@ class StudentService
         $response->item = PointRecord::find($model->id);
         return $response;
     }
+    /**
+     * insert and update
+     */
     public function submitPointRecord(WebRequest $webRequest) : WebResponse
     {
         $model = $webRequest->pointRecord;
-        $model->save();
+        if ($model->id) {
+            $updated = DB::table('point_records')->where('id', '=', $model->getId())->update($model->toArray()) == 1;
+        } else {
+            $model->save();
+        }
         
         if (isset($webRequest->attachmentInfo) && !is_null($webRequest->attachmentInfo)) {
             $picture = new Pictures();
