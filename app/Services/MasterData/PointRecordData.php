@@ -113,6 +113,12 @@ class PointRecordData extends BaseMasterData
 
     public function doDeleteById($record_id) : bool
     {
+        $this->deletePictures($record_id);
+        return parent::doDeleteById($record_id);
+    }
+
+    public function deletePictures($record_id):void
+    {
         $pictures = Pictures::where('point_record_id', '=', $record_id)->get();
         
         if (!is_null($pictures)) {
@@ -123,6 +129,5 @@ class PointRecordData extends BaseMasterData
                 // }
             }
         }
-        return parent::doDeleteById($record_id);
     }
 }

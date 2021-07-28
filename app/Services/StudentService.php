@@ -9,6 +9,8 @@ use App\Models\MedicalRecords;
 use App\Models\Pictures;
 use App\Models\PointRecord;
 use App\Models\RulePoint;
+use App\Services\MasterData\BaseMasterData;
+use App\Services\MasterData\PointRecordData;
 use App\Utils\FileUtil;
 use Error;
 use Exception;
@@ -45,12 +47,18 @@ class StudentService
     {
         $model = $webRequest->pointRecord;
         if ($model->id) {
+            if ($model->dropped_at) {
+                throw new Error("Record has been dropped");
+            }
             $updated = DB::table('point_records')->where('id', '=', $model->getId())->update($model->toArray()) == 1;
         } else {
             $model->save();
         }
         
         if (isset($webRequest->attachmentInfo) && !is_null($webRequest->attachmentInfo)) {
+            if ($model->id) {
+                $this->removeOldPicture($model->id);
+            }
             $picture = new Pictures();
             $picture->point_record_id = $model->id;
             $picture->name = FileUtil::writeBase64File($webRequest->attachmentInfo->url, 'POINT_RECORD');
@@ -60,6 +68,11 @@ class StudentService
         $response = new WebResponse();
         $response->item = PointRecord::with('rule_point.category', 'pictures', 'student')->find($model->id);
         return $response;
+    }
+    private function removeOldPicture(int $point_record_id)
+    {
+        $data = new PointRecordData();
+        $data->deletePictures($point_record_id);
     }
     public function submitMedicalRecord(WebRequest $webRequest) : WebResponse
     {

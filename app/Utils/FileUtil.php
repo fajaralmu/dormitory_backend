@@ -23,7 +23,7 @@ class FileUtil
         
     }
 
-    public static function writeBase64File(string $base64_string, string $code, $name = null) : string
+    public static function writeBase64File(string $base64_string, string $code = "UPLOAD_IMAGE_", $name = null) : string
     {
         if (is_null($name)) {
             $name = $code.'_'.FileUtil::$counter.now()->getTimestamp();
