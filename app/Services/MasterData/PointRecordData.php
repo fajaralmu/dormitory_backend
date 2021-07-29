@@ -13,8 +13,7 @@ use App\Utils\ObjectUtil;
 use Error;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
-$ALL = 'ALL';
+ 
 class PointRecordData extends BaseMasterData
 {
 
@@ -66,10 +65,10 @@ class PointRecordData extends BaseMasterData
         if (!is_null($filter_category)) {
             $query->where('categories.name', 'like', '%'.$filter_category.'%');
         }
-        if (!is_null($filter_class) && $filter_class != 'ALL') {
+        if (!is_null($filter_class) && $filter_class != '') {
             $query->where('siswa.kelas_id', $filter_class);
         }
-        if (!is_null($filter_dropped) && $filter_dropped != 'ALL') {
+        if (!is_null($filter_dropped) && $filter_dropped != '') {
             if ($filter_dropped == 'true') {
                 $query->whereNotNull('dropped_at');
             } elseif ($filter_dropped == 'false') {
@@ -108,7 +107,7 @@ class PointRecordData extends BaseMasterData
     }
     protected function queryObject()
     {
-        return PointRecord::with('student.kelas.sekolah', 'rule_point.category', 'pictures');
+        return PointRecord::with('student.kelas.sekolah', 'rule_point.category', 'pictures', 'follow_ups');
     }
 
     public function doDeleteById($record_id) : bool

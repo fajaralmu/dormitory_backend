@@ -16,7 +16,7 @@ class RulePointData extends BaseMasterData
     {
         $filterName = $this->getFieldsFilter('name') ?? "";
         $cat_id = $this->getFieldsFilter('category_id');
-        $filterCategory = !is_null($cat_id) && $cat_id != 'ALL' ? $cat_id : null;
+        $filterCategory = !is_null($cat_id) && $cat_id != '' ? $cat_id : null;
         $wheres = array(['name', 'like', '%'.$filterName.'%']);
         if (!is_null($filterCategory)) {
             array_push($wheres, ['category_id', '=', $filterCategory]);

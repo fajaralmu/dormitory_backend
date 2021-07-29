@@ -42,4 +42,8 @@ class PointRecord extends BaseModel
     {
         return $this->hasOne(Siswa::class, 'id', 'student_id');
     }
+    public function follow_ups()
+    {
+        return $this->belongsToMany(FollowUp::class)->using(PointRecordFollowUp::class);
+    }
 }

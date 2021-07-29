@@ -5,8 +5,6 @@ use App\Http\Controllers\Rest\RestMasterDataController;
 use App\Http\Controllers\Rest\RestMusyrifManagementController;
 use App\Http\Controllers\Rest\RestStudentActivityManagementController;
 use Illuminate\Http\Request;
-use App\Models\Siswa;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,6 +56,11 @@ Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'r
     Route::post('submitpointrecord', [RestStudentActivityManagementController::class, 'submitpointrecord']);
     Route::post('submitmedicalrecord', [RestStudentActivityManagementController::class, 'submitmedicalrecord']);
     Route::post('monthlymedicalrecord', [RestStudentActivityManagementController::class, 'monthlymedicalrecord']);
+    
+    Route::post('droppoint', [RestStudentActivityManagementController::class, 'droppoint']);
+    Route::post('followupreminders', [RestStudentActivityManagementController::class, 'followupreminders']);
+    Route::post('followup', [RestStudentActivityManagementController::class, 'followup']);
+    
     
  
 });

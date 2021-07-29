@@ -26,7 +26,7 @@ class StudentData extends BaseMasterData
         DB::enableQueryLog();
         $query = $this->queryObject();
          
-        $filter_class = !is_null($this->getFieldsFilter('class_id')) && $this->getFieldsFilter('class_id') != "ALL" ? $this->getFieldsFilter('class_id'): null;
+        $filter_class = !is_null($this->getFieldsFilter('class_id')) && ""!= $this->getFieldsFilter('class_id') ? $this->getFieldsFilter('class_id'): null;
         $filter_name = $this->getFieldsFilter('name');
         $with_point_record = $this->getFieldsFilter('with_point_record');
 

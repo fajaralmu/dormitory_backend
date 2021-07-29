@@ -43,6 +43,25 @@ class RestStudentActivityManagementController extends BaseRestController
             return $this->errorResponse($th);
         }
     }
+    public function followup(Request $request) : JsonResponse
+    {
+        try {
+            $webRequest = $this->getWebRequest($request);
+            $response = ($this->studentService->followUp($webRequest));
+            return parent::jsonResponseAndResendToken($response);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th);
+        }
+    }
+    public function followupreminders(Request $request) : JsonResponse
+    {
+        try {
+            $response = $this->studentService->followUpReminderList();
+            return parent::jsonResponseAndResendToken($response);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th);
+        }
+    }
     public function submitpointrecord(Request $request) : JsonResponse
     {
         try {

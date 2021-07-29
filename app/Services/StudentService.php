@@ -3,13 +3,13 @@ namespace App\Services;
 
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
-use App\Models\Category;
+use App\Models\FollowUp;
 use App\Models\Kelas;
 use App\Models\MedicalRecords;
 use App\Models\Pictures;
 use App\Models\PointRecord;
 use App\Models\RulePoint;
-use App\Services\MasterData\BaseMasterData;
+use App\Models\Siswa;
 use App\Services\MasterData\PointRecordData;
 use App\Utils\FileUtil;
 use Error;
@@ -134,4 +134,71 @@ class StudentService
         return $result;
     }
 
+    public function followUp(WebRequest $webRequest) : WebResponse
+    {
+        $followUp = new FollowUp();
+        $followUp->name = "TEST";
+        $followUp->description = "test FOLLOW UP";
+
+        $followUp->save();
+        $pointRecord = PointRecord::with('follow_ups')->find($webRequest->record_id);
+        if ($pointRecord->follow_ups->count() > 0) {
+            throw new Error("Follow up exist");
+        }
+        $pointRecord->follow_ups()->attach($followUp);
+        
+        $response = new WebResponse();
+        $response->item = $pointRecord;
+        return $response;
+    }
+
+    public function followUpReminderList(): WebResponse
+    {
+
+        $SQL = 'SELECT 
+                    r.student_id as STUDENT_ID,
+                    sum(p.point) as TOTAL_POINT, 
+                    count(fp.id) as FOLLOW_UP_COUNT 
+                from point_records r 
+                    -- left join siswa s on s.id = r.student_id 
+                    -- left join users u on u.nis = s.nis 
+                    left join rule_points p on p.id = r.point_id 
+                    left join follow_up_point_record fp on fp.point_record_id = r.id 
+                group by r.student_id
+                having 
+                    -- FOLLOW_UP_COUNT = ? and TOTAL_POINT < ?
+                    TOTAL_POINT < ? ';
+                  
+        $result = DB::select($SQL, [  -50]);
+        // $result = DB::select($SQL, [0, -30]);
+        $student_id_array = $this->getStudentIdArray($result);
+       
+        $response = new WebResponse();
+        $response->items =  $this->mapStudentNames($result, $student_id_array);
+        return $response;
+    }
+
+    private function mapStudentNames(array $records, array $array_of_id) : array {
+        $students = Siswa::with('user', 'kelas.sekolah')->whereIn('id', $array_of_id)->get();
+        foreach ($records as $record) {
+            foreach ($students as $student) {
+                if ($student->id == $record->STUDENT_ID) {
+                    $record->student = $student;
+                    break;
+                }
+            }
+        }
+
+        return $records;
+    }
+
+    private function getStudentIdArray(array $records) : array
+    {
+        $array = array();
+        foreach ($records as $item) {
+            array_push($array, $item->STUDENT_ID);
+        }
+
+        return $array;
+    }
 }
