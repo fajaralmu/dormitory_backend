@@ -27,26 +27,8 @@ class StudentService
         $this->configService = app(ConfigurationService::class);
     }
 
-    public function dropPoint(WebRequest $webRequest) : WebResponse
-    {
-        $model = $webRequest->pointRecord;
-        $record = PointRecord::with('rule_point')->find($model->id);
-        if (is_null($record)) {
-            throw new Exception("Data not found");
-        }
-        if (!$record->rule_point->droppable) {
-            throw new Exception("Cannot drop this item");
-        }
-        if (!is_null($model->dropped_at)) {
-            $record->dropped_at = $model->dropped_at = explode('.', $model->dropped_at)[0];
-            $record->save();
-        } else {
-            DB::table('point_records')->where('id', '=', $model->id)->update(['dropped_at'=> null]);
-        }
-        $response = new WebResponse();
-        $response->item = PointRecord::find($model->id);
-        return $response;
-    }
+
+   
     /**
      * insert and update
      */

@@ -6,6 +6,7 @@ use App\Services\AuthService;
 use App\Services\ConfigurationService;
 use App\Services\MasterDataService;
 use App\Services\MusyrifManagementService;
+use App\Services\StudentPointService;
 use App\Services\StudentService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -28,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
         $masterDataService = new MasterDataService();
         $this->app->bind(MasterDataService::class, function ($app) use ($masterDataService) {
             return $masterDataService;
+        });
+        $this->app->bind(StudentPointService::class, function ($app) {
+            return new StudentPointService();
         });
         $this->app->bind(AuthService::class, function ($app) use ($authService) {
             return $authService;

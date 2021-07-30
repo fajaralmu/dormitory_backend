@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rest;
 use App\Dto\WebResponse;
 use App\Http\Controllers\Rest\BaseRestController;
 use App\Services\MasterData\MedicalRecordData;
+use App\Services\StudentPointService;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,9 +12,11 @@ use Illuminate\Http\Request;
 class RestStudentActivityManagementController extends BaseRestController
 {
     private StudentService $studentService;
-    public function __construct(StudentService $studentService)
+    private StudentPointService $studentPointService;
+    public function __construct(StudentService $studentService, StudentPointService $studentPointService)
     {
         $this->studentService = $studentService;
+        $this->studentPointService = $studentPointService;
     }
     public function rulecategories(Request $request) :JsonResponse
     {
@@ -37,7 +40,27 @@ class RestStudentActivityManagementController extends BaseRestController
     {
         try {
             $webRequest = $this->getWebRequest($request);
-            $response = ($this->studentService->dropPoint($webRequest));
+            $response = ($this->studentPointService->dropPoint($webRequest));
+            return parent::jsonResponseAndResendToken($response);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th);
+        }
+    }
+    public function undroppointall(Request $request) : JsonResponse
+    {
+        try {
+            $webRequest = $this->getWebRequest($request);
+            $response = ($this->studentPointService->undropPointAll($webRequest));
+            return parent::jsonResponseAndResendToken($response);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th);
+        }
+    }
+    public function droppointall(Request $request) : JsonResponse
+    {
+        try {
+            $webRequest = $this->getWebRequest($request);
+            $response = ($this->studentPointService->dropPointAll($webRequest));
             return parent::jsonResponseAndResendToken($response);
         } catch (\Throwable $th) {
             return $this->errorResponse($th);

@@ -79,14 +79,16 @@ class BaseMasterData
     {
         return $q;
     }
-    protected function queryCount(array $wheres) : int
+    protected function queryCount(array $wheres, $count_field = null) : int
     {
         $query = $this->queryObject();
         $this->withJoin($query);
         foreach ($wheres as $where) {
             $query->where($where[0], $where[1], $where[2]);
         }
-
+        if (!is_null($count_field)) {
+            return $query->count($count_field);
+        }
         return $query->count();
     }
     protected function generalResponse(): WebResponse
@@ -108,9 +110,9 @@ class BaseMasterData
     {
         if (is_null($model->getId())) {
             
-            $result = DB::table($this->tableName)->insert($model->toArray());
+            // $result = DB::table($this->tableName)->insert($model->toArray());
             
-            return $result;
+            return $model->save();
         } else {
             return DB::table($this->tableName)->where('id', '=', $model->getId())->update($model->toArray()) == 1;
         }

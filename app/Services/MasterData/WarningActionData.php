@@ -17,13 +17,18 @@ class WarningActionData extends BaseMasterData
     public function list() : WebResponse
     {
         $filterName = $this->getFieldsFilter('name') ?? "";
-        $filterStudentName = $this->getFieldsFilter('student_name') ?? "";
+        $filterStudent = $this->getFieldsFilter('student_name') ?? "";
         $wheres = array(
             ['warning_action.name', 'like', '%'.$filterName.'%'],
-            ['users.name', 'like', '%'.$filterStudentName.'%']
         );
-        $items = $this->queryList($wheres, 'warning_action.name');
-        $result_count = $this->queryCount($wheres);
+        if (""!=$filterStudent) {
+            array_push(
+                $wheres,
+                ['users.name', 'like', '%'.$filterStudent.'%']
+            );
+        }
+        $items = $this->queryList($wheres, 'warning_action.id', 'desc');
+        $result_count = $this->queryCount($wheres, ("" != $filterStudent) ? 'siswa.id' : null);
         
         $response = $this->generalResponse();
 
@@ -34,8 +39,10 @@ class WarningActionData extends BaseMasterData
 
     protected function withJoin($q)
     {
-        $q->leftJoin('siswa', 'siswa.id', '=', 'warning_action.student_id');
-        $q->leftJoin('users', 'users.nis', '=', 'siswa.nis');
+        if (($this->getFieldsFilter('student_name') ?? "") != "") {
+            $q->leftJoin('siswa', 'siswa.id', '=', 'warning_action.student_id');
+            $q->leftJoin('users', 'users.nis', '=', 'siswa.nis');
+        }
         return $q;
     }
 
@@ -46,7 +53,7 @@ class WarningActionData extends BaseMasterData
 
     protected function queryObject()
     {
-        return WarningAction::with('student.kelas.sekolah');
+        return WarningAction::with('student.kelas.sekolah')->distinct();
     }
 
     public function doGetById($record_id)
