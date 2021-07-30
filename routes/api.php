@@ -3,6 +3,7 @@
 use App\Http\Controllers\Rest\RestAccountController;
 use App\Http\Controllers\Rest\RestMasterDataController;
 use App\Http\Controllers\Rest\RestMusyrifManagementController;
+use App\Http\Controllers\Rest\RestSettingController;
 use App\Http\Controllers\Rest\RestStudentActivityManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,9 @@ Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], fun
     Route::post('logout', [RestAccountController::class, 'logout']);
     Route::post('requestid', [RestAccountController::class, 'requestId']);
     
+});
+Route:: group(['prefix' => 'setting' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
+    Route::post('updateconfig', [RestSettingController::class, 'updateConfig']);
 });
 Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama,admin_asrama']  ], function () {
     //RestMusyrifManagementController

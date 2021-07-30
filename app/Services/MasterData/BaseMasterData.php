@@ -60,6 +60,7 @@ class BaseMasterData
     protected function queryList(array $wheres, string $orderBy = null, string $orderType = 'asc') : array
     {
         $query = $this->queryObject();
+        $this->withJoin($query);
         foreach ($wheres as $where) {
             $query->where($where[0], $where[1], $where[2]);
         }
@@ -72,11 +73,16 @@ class BaseMasterData
         }
 
         $this->setLimitOffset($query);
-        return $query->get()->toArray();
+        return $query->get($this->tableName.'.*')->toArray();
+    }
+    protected function withJoin($q)
+    {
+        return $q;
     }
     protected function queryCount(array $wheres) : int
     {
         $query = $this->queryObject();
+        $this->withJoin($query);
         foreach ($wheres as $where) {
             $query->where($where[0], $where[1], $where[2]);
         }
@@ -101,7 +107,9 @@ class BaseMasterData
     public function doUpdate(BaseModel $model) : bool
     {
         if (is_null($model->getId())) {
+            
             $result = DB::table($this->tableName)->insert($model->toArray());
+            
             return $result;
         } else {
             return DB::table($this->tableName)->where('id', '=', $model->getId())->update($model->toArray()) == 1;
@@ -173,6 +181,8 @@ class BaseMasterData
                 return new PointRecordData($filter);
             case 'medicalrecords':
                 return new MedicalRecordData($filter);
+            case 'warningaction':
+                return new WarningActionData($filter);
             default:
                 # code...
                 throw new Error("Invalid model name: ".$modelName);

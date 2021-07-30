@@ -20,6 +20,13 @@ use Illuminate\Support\Facades\DB;
 
 class StudentService
 {
+
+    private ConfigurationService $configService;
+    public function __construct()
+    {
+        $this->configService = app(ConfigurationService::class);
+    }
+
     public function dropPoint(WebRequest $webRequest) : WebResponse
     {
         $model = $webRequest->pointRecord;
@@ -154,22 +161,23 @@ class StudentService
 
     public function followUpReminderList(): WebResponse
     {
-
+        $config = $this->configService->getApplicationProfile();
         $SQL = 'SELECT 
                     r.student_id as STUDENT_ID,
                     sum(p.point) as TOTAL_POINT, 
-                    count(fp.id) as FOLLOW_UP_COUNT 
+                    count(fp.id) as FOLLOW_UP_COUNT
                 from point_records r 
                     -- left join siswa s on s.id = r.student_id 
                     -- left join users u on u.nis = s.nis 
                     left join rule_points p on p.id = r.point_id 
                     left join follow_up_point_record fp on fp.point_record_id = r.id 
-                group by r.student_id
+                group by r.student_id, r.dropped_at 
                 having 
                     -- FOLLOW_UP_COUNT = ? and TOTAL_POINT < ?
-                    TOTAL_POINT < ? ';
+                    TOTAL_POINT < ?
+                    and r.dropped_at is null ';
                   
-        $result = DB::select($SQL, [  -50]);
+        $result = DB::select($SQL, [  $config->warning_point ]);
         // $result = DB::select($SQL, [0, -30]);
         $student_id_array = $this->getStudentIdArray($result);
        

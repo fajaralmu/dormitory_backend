@@ -12,13 +12,14 @@ class ApplicationProfile extends BaseModel
 		'code',
 		'welcoming_message',
 		'description',
+		'warning_point'
 	];
 
-	protected $id;
-	protected $name;
-	protected $code;
-	protected $welcoming_message;
-	protected $description;
+	// protected $id;
+	// protected $name;
+	// protected $code;
+	// protected $welcoming_message;
+	// protected $description;
 
 	public static string $CODE = "ASRAMA_KIIS";
 	public static function defaultModel() : ApplicationProfile
@@ -28,6 +29,7 @@ class ApplicationProfile extends BaseModel
 		$obj->code = ApplicationProfile::$CODE;
 		$obj->welcoming_message = "WELCOME";
 		$obj->description = "Aplikasi Asrama";
+		$obj->warning_point = -30;
 		// $obj->setAttribute('name', "Asrama KIIS");
 		// $obj->setAttribute('code', ApplicationProfile::$CODE);
 		// $obj->setAttribute('welcoming_message', "Ahlan wa sahlan");
