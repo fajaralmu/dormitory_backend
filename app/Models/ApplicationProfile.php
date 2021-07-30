@@ -15,11 +15,12 @@ class ApplicationProfile extends BaseModel
 		'warning_point'
 	];
 
-	// protected $id;
-	// protected $name;
-	// protected $code;
-	// protected $welcoming_message;
-	// protected $description;
+	protected $id;
+	protected $name;
+	protected $code;
+	protected $welcoming_message;
+	protected $description;
+	protected $warning_point;
 
 	public static string $CODE = "ASRAMA_KIIS";
 	public static function defaultModel() : ApplicationProfile
