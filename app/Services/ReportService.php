@@ -28,24 +28,9 @@ class ReportService
         return $response;
     }
 
-    private function scorePredicate($score) : string
-    {
-        $score = is_null($score) ? 0 : (int) $score;
-        if (is_null($score) || $score < 74) {
-            return "D";
-        }
-        if ($score < 80) {
-            return "C";
-        }
-        if ($score < 90) {
-            return "B";
-        }
-        return "A";
-    }
-
     private function mapStudentsAndPoints(string $class_id) : array
     {
-        $categories     = Category::all();
+        $categories     = Category::with('predicates')->get();
         $students       = Siswa::with('kelas.sekolah', 'user')->where('kelas_id', $class_id)->get();
         $mappedPoints   = $this->getStudentsPointMapped($class_id);
         $result         = [];
@@ -68,7 +53,7 @@ class ReportService
                 $score = $initial_point + $reduced_point;
                 $predicate = $category->getPredicate($score) ?? new CategoryPredicate();
                 $data_categories = [
-                    'cat_id'            => $category->id,
+                    'category_id'       => $category->id,
                     'name'              => $category->name,
                     'initial_point'     => $initial_point,
                     'reduced_point'     => $reduced_point,
@@ -105,15 +90,15 @@ class ReportService
             ];
             $categories_data = $item['categories'];
             foreach ($categories_data as $category_data) {
-                $category_id = $category_data['cat_id'];
+                $category_id = $category_data['category_id'];
                 if (!$header_complete) {
-                    array_push($headers, $category_data['name'], "Pengurangan ". $category_id, 'Predikat '.$category_id, 'Keterangan '.$category_id);
+                    array_push($headers, $category_data['name'], "Pengurangan_". $category_id, 'Predikat_'.$category_id, 'Keterangan_'.$category_id);
                 }
 
                 $report_data_item[$category_data['name']] = $category_data['total_point'];
-                $report_data_item['Predikat '.$category_id] = $category_data['predicate_letter'];
-                $report_data_item['Keterangan '.$category_id] = $category_data['predicate_desc'];
-                $report_data_item['Pengurangan '.$category_id] = $category_data['reduced_point'];
+                $report_data_item['Predikat_'.$category_id] = $category_data['predicate_letter'];
+                $report_data_item['Keterangan_'.$category_id] = $category_data['predicate_desc'];
+                $report_data_item['Pengurangan_'.$category_id] = $category_data['reduced_point'];
             }
             $header_complete = true;
 
