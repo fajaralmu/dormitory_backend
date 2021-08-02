@@ -10,7 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 
-class BaseMasterData
+abstract class BaseMasterData
 {
     protected string $tableName;
     protected ?Filter $filter;
@@ -109,7 +109,6 @@ class BaseMasterData
     public function doUpdate(BaseModel $model) : bool
     {
         if (is_null($model->getId())) {
-            
             // $result = DB::table($this->tableName)->insert($model->toArray());
             
             return $model->save();
@@ -185,6 +184,8 @@ class BaseMasterData
                 return new MedicalRecordData($filter);
             case 'warningaction':
                 return new WarningActionData($filter);
+            case 'categorypredicate':
+                return new CategoryPredicateData($filter);
             default:
                 # code...
                 throw new Error("Invalid model name: ".$modelName);

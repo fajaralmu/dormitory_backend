@@ -3,6 +3,7 @@
 use App\Http\Controllers\Rest\RestAccountController;
 use App\Http\Controllers\Rest\RestMasterDataController;
 use App\Http\Controllers\Rest\RestMusyrifManagementController;
+use App\Http\Controllers\Rest\RestReportController;
 use App\Http\Controllers\Rest\RestSettingController;
 use App\Http\Controllers\Rest\RestStudentActivityManagementController;
 use Illuminate\Http\Request;
@@ -52,6 +53,10 @@ Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], fun
 });
 Route:: group(['prefix' => 'setting' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
     Route::post('updateconfig', [RestSettingController::class, 'updateConfig']);
+});
+Route:: group(['prefix' => 'report' , 'middleware'=>['auth:api', 'role:musyrif_asrama']  ], function () {
+    Route::post('studentdata/{class_id}', [RestReportController::class, 'studentdata']);
+    Route::post('downloaddata/{class_id}', [RestReportController::class, 'downloadReportData']);
 });
 Route:: group(['prefix' => 'dormitorymanagement' , 'middleware'=>['auth:api', 'role:musyrif_asrama,admin_asrama']  ], function () {
     //RestMusyrifManagementController

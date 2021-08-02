@@ -3,6 +3,7 @@ namespace App\Dto;
 
 use App\Models\ApplicationProfile;
 use App\Models\Category;
+use App\Models\CategoryPredicate;
 use App\Models\MedicalRecords;
 use App\Models\Pegawai;
 use App\Models\PointRecord;
@@ -28,6 +29,7 @@ class WebRequest
     public PointRecord $pointRecord;
     public MedicalRecords $medicalRecord;
     public WarningAction $warningAction;
+    public CategoryPredicate $categoryPredicate;
 
     public ApplicationProfile $applicationProfile;
 
