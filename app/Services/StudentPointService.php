@@ -39,7 +39,7 @@ class StudentPointService
             left join rule_points p on p.id = rec.point_id 
             SET dropped_at = null
             where 
-                p.droppable is true and rec.id in ('. join(',', $webRequest->items) .')'
+                rec.id in ('. join(',', $webRequest->items) .')'
             );
         $response = new WebResponse();
         $response->message = $result;

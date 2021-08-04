@@ -267,5 +267,5 @@ class ReportService
         $raw = $this->getCellRawName($col, $row);
         return $raw['col'].$raw['row'];
     }
-
 }
+
