@@ -5,6 +5,7 @@ use App\Dto\Filter;
 use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\BaseModel;
+use App\Models\RuleViolation;
 use Error;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -186,6 +187,8 @@ abstract class BaseMasterData
                 return new WarningActionData($filter);
             case 'categorypredicate':
                 return new CategoryPredicateData($filter);
+            case 'ruleviolation':
+                return new RuleViolationData($filter);
             default:
                 # code...
                 throw new Error("Invalid model name: ".$modelName);

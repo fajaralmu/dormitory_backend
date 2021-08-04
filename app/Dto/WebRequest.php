@@ -8,6 +8,7 @@ use App\Models\MedicalRecords;
 use App\Models\Pegawai;
 use App\Models\PointRecord;
 use App\Models\RulePoint;
+use App\Models\RuleViolation;
 use App\Models\User;
 use App\Models\WarningAction;
 
@@ -30,6 +31,7 @@ class WebRequest
     public MedicalRecords $medicalRecord;
     public WarningAction $warningAction;
     public CategoryPredicate $categoryPredicate;
+    public RuleViolation $ruleViolation;
 
     public ApplicationProfile $applicationProfile;
 

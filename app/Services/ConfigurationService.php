@@ -17,6 +17,12 @@ class ConfigurationService
             $model->id = $model->save();
             $existing = $model;
         }
+
+        unset($existing->created_at);
+        unset($existing->updated_at);
+        $existing->semester = config('school.semester');
+        $existing->tahun_ajaran = config('school.tahun_ajaran');
+
         return $existing;
     }
 

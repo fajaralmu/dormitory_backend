@@ -24,18 +24,17 @@ class RestAccountController extends BaseRestController
     }
     public function requestId(Request $request) : JsonResponse
     {
-        $apy = null;
-        try {
-            $token = JWTAuth::getToken();
-            out("TOKEN: ".$token);
-            $apy = JWTAuth::getPayload()->toArray();
-        } catch (Throwable $th) {
-            //
-            $apy = $th->getMessage();
-        }
+        // $apy = null;
+        // try {
+        //     $token = JWTAuth::getToken();
+        //     // out("TOKEN: ".$token);
+        //     $apy = JWTAuth::getPayload()->toArray();
+        // } catch (Throwable $th) {
+        //     $apy = $th->getMessage();
+        // }
         try {
             $response = new WebResponse();
-            $response->item = $apy;
+            // $response->item = $apy;
             $response->message = Str::random(10);
             $response->profile = $this->configurationService->getApplicationProfile();
             $response->loggedIn = is_null($request->user()) == false;

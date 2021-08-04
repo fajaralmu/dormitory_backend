@@ -65,7 +65,7 @@ class User extends BaseModel implements
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'api_token'
     ];
 
     /**
@@ -182,9 +182,20 @@ class User extends BaseModel implements
 
     public static function forResponse(User $u) : User
     {
-        $u->password = (null);
-        $u->setAttribute('api_token', null);
-        $u->setAttribute('password', null);
+        unset($u->password);
+
+        $attributes = $u->getAttributes();
+        
+        unset(
+            $attributes['api_token'],
+            $attributes['password'],
+            $attributes['created_at'],
+            $attributes['updated_at'],
+            $attributes['deleted_at']
+        );
+        $u->setRawAttributes($attributes);
+        // $u->setAttribute('api_token', null);
+        // $u->setAttribute('password', null);
         return $u;
     }
 }

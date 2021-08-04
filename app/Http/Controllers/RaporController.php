@@ -18,15 +18,18 @@ class RaporController extends Controller
 
     public function rapor(Request $request, string $class_id)
     {
-        if (Kelas::find($class_id) == null) {
+        $class = Kelas::with('sekolah')->find($class_id);
+        if ($class == null) {
             throw new Error("Class with id:".$class_id." not found");
         }
+        
         $data = $this->reportService->mapStudentsAndPoints($class_id);
         if (sizeof($data) == 0) {
             return null;
         }
         return view('rapor.index', [
-            'items'         => $data,
+            'class'        => $class,
+            'items'        => $data,
             'semester'     => config('school.semester'),
             'tahun_ajaran' => config('school.tahun_ajaran')
         ]);

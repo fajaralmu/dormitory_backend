@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Dto\WebResponse;
 use App\Models\Category;
 use App\Models\CategoryPredicate;
+use App\Models\RuleViolation;
 use App\Models\Siswa;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -32,6 +33,9 @@ class ReportService
     {
         $categories     = Category::with('predicates')->get();
         $students       = Siswa::with('kelas.sekolah', 'user')->where('kelas_id', $class_id)->get();
+        $violations     = RuleViolation::whereIn('student_id', $students->pluck('id')->flatten())
+                            ->where('tahun_ajaran', config('school.tahun_ajaran'))
+                            ->where('semester', config('school.semester'))->get();
         $mappedPoints   = $this->getStudentsPointMapped($class_id);
         $result         = [];
 
@@ -44,6 +48,7 @@ class ReportService
                 'categories'    => [],
                 'categories_count' => sizeof($categories)
             ];
+            $violation = $violations->where('student_id', $student->id)->first();
             $total_score = 0;
             $total_reduce_point = 0;
             
@@ -79,6 +84,9 @@ class ReportService
             $data['average']        = $average;
             $data['average_status'] = $this->predicateStatus($average);
             $data['total_reduce_point'] = $total_reduce_point;
+
+            $data['violation_point'] = $violation ? $violation->point : "0";
+            $data['violation_name'] = $violation ? $violation->name : "-";
 
             array_push($result, $data);
         }

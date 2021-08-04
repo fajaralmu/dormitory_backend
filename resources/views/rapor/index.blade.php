@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Rapor Asrama</title>
+        <title>Rapor Asrama Kelas {{$class->level.$class->rombel}} {{$class->sekolah->nama}}</title>
         <style>
             * {
                 font-family: Calibri
@@ -76,7 +76,7 @@
             font-size: 0.5em
         }
         .category-label {
-            font-size: 0.3em
+            font-size: 0.5em
         }
 
         </style>
@@ -127,8 +127,8 @@
                         <tr>
                             <td>Nilai rata-rata</td>
                             <td class="text-center">{{$item['average_status']}}</td>
-                            <td class="text-center">{{$item['total_reduce_point']}}</td>
-                            <td></td>
+                            <td class="text-center">{{$item['violation_point']}}</td>
+                            <td>{{$item['violation_name'] }}</td>
                         </tr>
                         <tr>
                             <td colspan="4" >
@@ -139,7 +139,7 @@
                 </table>
             </div>
             <div class="chart text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{50 * ($categories_count + 1)}} 160" style="width: 80%">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{50 * ($categories_count + 1)}} 180" style="width: 80%">
                     
                     @foreach ([0, 20, 40, 60, 80, 100] as $score_indicator)
                         @php
