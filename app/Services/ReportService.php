@@ -28,7 +28,7 @@ class ReportService
         return $response;
     }
 
-    private function mapStudentsAndPoints(string $class_id) : array
+    public function mapStudentsAndPoints(string $class_id) : array
     {
         $categories     = Category::with('predicates')->get();
         $students       = Siswa::with('kelas.sekolah', 'user')->where('kelas_id', $class_id)->get();
@@ -41,29 +41,44 @@ class ReportService
                 'name'          => Arr::get($student, 'user.name'),
                 'class'         => Arr::get($student, 'kelas.level').Arr::get($student, 'kelas.rombel')
                                     .'  '. Arr::get($student, 'kelas.sekolah.nama'),
-                'categories'    => []
+                'categories'    => [],
+                'categories_count' => sizeof($categories)
             ];
+            $total_score = 0;
+            $total_reduce_point = 0;
+            
             foreach ($categories as $category) {
                 $initial_point = 100;
                 $reduced_point = 0; //0 or negative
                 try {
+                    // $reduced_point is 0 OR NEGATIVE
                     $reduced_point = $mappedPoints[$student->id][$category->id]->TOTAL_POINT;
                 } catch (Throwable $th) {
                 }
                 $score = $initial_point + $reduced_point;
+                $total_reduce_point += $reduced_point;
                 $predicate = $category->getPredicate($score) ?? new CategoryPredicate();
                 $data_categories = [
                     'category_id'       => $category->id,
                     'name'              => $category->name,
                     'initial_point'     => $initial_point,
                     'reduced_point'     => $reduced_point,
+                   //TODO: remove total_point
                     'total_point'       => $score,
+                    'score'             => $score,
                     'predicate_letter'  => $predicate->name,
+                    'predicate_status'  => $this->predicateStatus($score),
                     'predicate_desc'    => $predicate->description,
 
                 ];
+                $total_score += $score;
                 array_push($data['categories'], $data_categories);
             }
+
+            $average                = $total_score / sizeof($categories);
+            $data['average']        = $average;
+            $data['average_status'] = $this->predicateStatus($average);
+            $data['total_reduce_point'] = $total_reduce_point;
 
             array_push($result, $data);
         }
@@ -71,13 +86,26 @@ class ReportService
         return $result;
     }
 
+    private function predicateStatus($score) : string
+    {
+        $score = is_null($score) ? 0 : (int) $score;
+        if (is_null($score) || $score < 74) {
+            return "Kurang";
+        }
+        if ($score < 80) {
+            return "Cukup";
+        }
+        if ($score < 90) {
+            return "Baik";
+        }
+        return "Sangat Baik";
+    }
 
     public function downloadReportData(string $class_id) : StreamedResponse
     {
         $data = $this->mapStudentsAndPoints($class_id);
-        $headers = [
-            'No', 'Siswa', 'Kelas'
-        ];
+        $headers = ['No', 'Siswa', 'Kelas' ];
+
         $report_data = [];
         $i = 1;
         $header_complete = false;
@@ -107,7 +135,7 @@ class ReportService
         }
         $response = $this->writeExcel($report_data, $headers);
 
-        return $this->fileResponse('Deteail-Rapor-Asrama-'.$class_id, $response);
+        return $this->fileResponse('Detail-Rapor-Asrama-'.$class_id, $response);
     }
 
     private function getStudentsPointMapped(string $class_id) : array

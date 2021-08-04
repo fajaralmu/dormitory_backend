@@ -11,6 +11,9 @@
 |
 */
 
+use App\Http\Controllers\RaporController;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/login', 'JoinController@create')->name('login');
 Route::get('/callback', 'JoinController@store');
 
@@ -49,3 +52,5 @@ Route::group(
 Route::view('/upgrade', 'upgrade')->name('upgrade');
 
 Route::post('sync', 'SyncronizeController@store');
+
+Route::get('rapor/{class_id}', [RaporController::class, 'rapor']);
