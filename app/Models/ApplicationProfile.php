@@ -12,7 +12,12 @@ class ApplicationProfile extends BaseModel
 		'code',
 		'welcoming_message',
 		'description',
-		'warning_point'
+		'warning_point',
+		'division_head_id',
+		'school_director_id',
+		'semester',
+		'tahun_ajaran',
+		'report_date'
 	];
 
 	protected $id;
@@ -21,6 +26,20 @@ class ApplicationProfile extends BaseModel
 	protected $welcoming_message;
 	protected $description;
 	protected $warning_point;
+	protected $division_head_id;
+	protected $school_director_id;
+	protected $tahun_ajaran;
+	protected $semester;
+	protected $report_date;
+
+	public function division_head()
+    {
+        return $this->belongsTo(Pegawai::class);
+    }
+	public function school_director()
+    {
+        return $this->belongsTo(Pegawai::class);
+    }
 
 	public static string $CODE = "ASRAMA_KIIS";
 	public static function defaultModel() : ApplicationProfile

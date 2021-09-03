@@ -101,8 +101,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Definisi Skor</th>
-                            <th>Kompetensi</th>
+                            <th>Kegiatan</th>
+                            <th>Kategori</th>
                             <th colspan="2">Keterangan</th>
                         </tr>
                     </thead>
@@ -111,7 +111,8 @@
                             <tr>
                                 <td>{{$category_data['name']}}</td>
                                 <td class="text-center">
-                                    {{$category_data['predicate_status']}}
+                                    {{$category_data['predicate_name']}}
+                                    {{-- {{$category_data['predicate_status']}} --}}
                                 </td>
                                 <td class="text-center" colspan="2">
                                     {{$category_data['predicate_desc']}}
@@ -178,6 +179,38 @@
                     
                 </svg>
             </div>
+        </div>
+        <div class="bottom no-break-page" style="width: 100%;  font-size: 0.9em">
+            <p class="text-center">Jakarta, {{ $report_date }} <br> Mengetahui,</p>
+            <table style="width: 100%; table-layout: fixed">
+                <tr>
+                    @foreach ($signatures as $dir => $details)
+                        <td>
+                            <div>
+                                <div class="text-center">
+                                    <p class="text-bold" style="margin: 0 0 -2px 0;">
+                                        {{ $details['as'] }}
+                                    </p>
+                                    <div style="height: 100px;position:relative;">
+                                        {{-- @if ($dir === 'left' && !is_null($stempel))
+                                            <img style="height: 110%;position:absolute;top: 10px;left: 70px;transform: rotate(350deg);"
+                                                src="{{ Storage::url('stamps/' . $stempel) }}" alt="">
+                                        @endif
+                                        @if (!is_null($details['image']))
+                                            <img style="height: 100%;"
+                                                src="{{ Storage::url('signatures/' . $details['image']) }}" alt="">
+                                            {{-- <img style="height: 100%;"
+                                                src="data:image/png;base64, {{ $details['image_data'] }}" alt=""> 
+                                        @endif --}}
+                                    </div>
+                                   
+                                    <p >{{ $details['name'] }}</p>
+                                </div>
+                            </div>
+                        </td>
+                    @endforeach
+                </tr>
+            </table>
         </div>
         <div class="page-break"></div>
 

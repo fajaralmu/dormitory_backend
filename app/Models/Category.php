@@ -30,7 +30,7 @@ class Category extends BaseModel
         }
         $letter = $this->scorePredicate($score);
         foreach ($this->predicates as $predicate) {
-            if ($predicate->name == $letter) {
+            if ($predicate->code == $letter) {
                 return $predicate;
             }
         }

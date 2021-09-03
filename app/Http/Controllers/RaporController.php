@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\ApplicationProfile;
 use App\Models\Kelas;
 use App\Services\ReportService;
 use Error;
@@ -27,11 +28,27 @@ class RaporController extends Controller
         if (sizeof($data) == 0) {
             return null;
         }
+
+        $profile = ApplicationProfile::with('school_director', 'division_head')->where(
+            ['code' => ApplicationProfile::$CODE]
+        )->first();
+
         return view('rapor.index', [
             'class'        => $class,
             'items'        => $data,
             'semester'     => config('school.semester'),
-            'tahun_ajaran' => config('school.tahun_ajaran')
+            'tahun_ajaran' => config('school.tahun_ajaran'),
+            'signatures'   => [
+                [
+                    'as' => 'Direktur',
+                    'name' => $profile->school_director->user->name
+                ],
+                [
+                    'as' => 'Kepala Asrama',
+                    'name' => $profile->division_head->user->name
+                ]
+            ],
+            'report_date'  => $profile->report_date,
         ]);
     }
 

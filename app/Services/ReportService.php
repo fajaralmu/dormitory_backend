@@ -18,7 +18,7 @@ class ReportService
 {
     private $letters  = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
     "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-
+    
 
 
     public function getRaporData(string $class_id) : WebResponse
@@ -73,6 +73,7 @@ class ReportService
                     'score'             => $score,
                     'predicate_letter'  => $predicate->name,
                     'predicate_status'  => $this->predicateStatus($score),
+                    'predicate_name'    => $predicate->name,
                     'predicate_desc'    => $predicate->description,
 
                 ];

@@ -7,12 +7,14 @@ class CategoryPredicate extends BaseModel
     protected $table = 'category_predicate';
 
     protected $fillable = [
-        'name',
+        'code',
         'category_id',
+        'name',
         'description',
     ];
 
     protected $id;
+    protected $code;
     protected $name;
     protected $category_id;
     protected $description;

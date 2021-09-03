@@ -110,6 +110,7 @@ class User extends BaseModel implements
         return $this->hasRole('admin');
     }
 
+
     public function hasRole($roles)
     {
         $user_roles = json_decode($this->attributes['roles']);
@@ -180,7 +181,7 @@ class User extends BaseModel implements
         ];
     }
 
-    public static function forResponse(User $u) : User
+    public static function forResponse(User $u, ...$ignoreFields) : User
     {
         unset($u->password);
 
@@ -191,8 +192,16 @@ class User extends BaseModel implements
             $attributes['password'],
             $attributes['created_at'],
             $attributes['updated_at'],
-            $attributes['deleted_at']
+            $attributes['deleted_at'],
+            $attributes['ip'],
+            $attributes['session_id'],
+            $attributes['email_verified_at'],
         );
+        if ($ignoreFields) {
+            foreach ($ignoreFields as $field) {
+                unset($attributes[$field]);
+            }
+        }
         $u->setRawAttributes($attributes);
         // $u->setAttribute('api_token', null);
         // $u->setAttribute('password', null);
