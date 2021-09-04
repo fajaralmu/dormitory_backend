@@ -54,7 +54,7 @@ Route:: group(['prefix' => 'accountdashboard' , 'middleware'=>'auth:api'  ], fun
 Route:: group(['prefix' => 'setting' , 'middleware'=>['auth:api', 'role:admin_asrama']  ], function () {
     Route::post('updateconfig', [RestSettingController::class, 'updateConfig']);
 });
-Route:: group(['prefix' => 'report' , 'middleware'=>['auth:api', 'role:musyrif_asrama']  ], function () {
+Route:: group(['prefix' => 'report' , 'middleware'=>['auth:api', 'role:musyrif_asrama,admin_asrama']  ], function () {
     Route::post('studentdata/{class_id}', [RestReportController::class, 'studentdata']);
     Route::post('downloaddata/{class_id}', [RestReportController::class, 'downloadReportData']);
 });

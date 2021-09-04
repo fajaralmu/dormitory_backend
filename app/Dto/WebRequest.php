@@ -35,7 +35,9 @@ class WebRequest
 
     public ApplicationProfile $applicationProfile;
 
-    public ?AttachmentInfo $attachmentInfo;
+    public ?AttachmentInfo $attachmentInfo = null;
+    public ?AttachmentInfo $attachmentInfo2 = null;
+    public ?AttachmentInfo $attachmentInfo3 = null;
 
     public array $items;
 }

@@ -38,14 +38,17 @@ class RaporController extends Controller
             'items'        => $data,
             'semester'     => config('school.semester'),
             'tahun_ajaran' => config('school.tahun_ajaran'),
+            'stamp'        => $profile->stamp,
             'signatures'   => [
-                [
+                'left'=> [
                     'as' => 'Direktur',
-                    'name' => $profile->school_director->user->name
+                    'name' => $profile->school_director->user->name,
+                    'image' => $profile->school_director_signature
                 ],
-                [
+                'right' => [
                     'as' => 'Kepala Asrama',
-                    'name' => $profile->division_head->user->name
+                    'name' => $profile->division_head->user->name,
+                    'image' => $profile->division_head_signature
                 ]
             ],
             'report_date'  => $profile->report_date,

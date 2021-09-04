@@ -17,7 +17,11 @@ class ApplicationProfile extends BaseModel
 		'school_director_id',
 		'semester',
 		'tahun_ajaran',
-		'report_date'
+		'report_date',
+		'stamp',
+		'division_head_signature',
+		'school_director_signature'
+
 	];
 
 	protected $id;
@@ -26,11 +30,18 @@ class ApplicationProfile extends BaseModel
 	protected $welcoming_message;
 	protected $description;
 	protected $warning_point;
-	protected $division_head_id;
-	protected $school_director_id;
 	protected $tahun_ajaran;
 	protected $semester;
 	protected $report_date;
+
+	
+	protected $division_head_id;
+	protected $school_director_id;
+
+	protected $stamp;
+	protected $division_head_signature;
+	protected $school_director_signature;
+	
 
 	public function division_head()
     {

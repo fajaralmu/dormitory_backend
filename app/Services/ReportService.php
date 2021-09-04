@@ -71,7 +71,7 @@ class ReportService
                    //TODO: remove total_point
                     'total_point'       => $score,
                     'score'             => $score,
-                    'predicate_letter'  => $predicate->name,
+                    'predicate_letter'  => $predicate->code,
                     'predicate_status'  => $this->predicateStatus($score),
                     'predicate_name'    => $predicate->name,
                     'predicate_desc'    => $predicate->description,

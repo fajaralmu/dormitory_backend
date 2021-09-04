@@ -5,6 +5,7 @@ use App\Dto\WebRequest;
 use App\Dto\WebResponse;
 use App\Models\ApplicationProfile;
 use App\Models\User;
+use App\Utils\FileUtil;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -56,6 +57,15 @@ class ConfigurationService
         }
         if ($model->report_date) {
             $existing->report_date = $model->report_date;
+        }
+        if ($webRequest->attachmentInfo) {
+            $existing->stamp = FileUtil::writeBase64File($webRequest->attachmentInfo->url, 'PROFILE');
+        }
+        if ($webRequest->attachmentInfo2) {
+            $existing->school_director_signature = FileUtil::writeBase64File($webRequest->attachmentInfo2->url, 'PROFILE');
+        }
+        if ($webRequest->attachmentInfo3) {
+            $existing->division_head_signature = FileUtil::writeBase64File($webRequest->attachmentInfo3->url, 'PROFILE');
         }
 
         DB::table('application_profiles')->where('id', $existing->getId())->update($existing->toArray()) == 1;

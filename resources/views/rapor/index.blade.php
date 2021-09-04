@@ -192,16 +192,14 @@
                                         {{ $details['as'] }}
                                     </p>
                                     <div style="height: 100px;position:relative;">
-                                        {{-- @if ($dir === 'left' && !is_null($stempel))
+                                        @if ($dir === 'left' && !is_null($stamp))
                                             <img style="height: 110%;position:absolute;top: 10px;left: 70px;transform: rotate(350deg);"
-                                                src="{{ Storage::url('stamps/' . $stempel) }}" alt="">
+                                                src="{{ url('upload/PROFILE/' . $stamp) }}" alt="">
                                         @endif
                                         @if (!is_null($details['image']))
                                             <img style="height: 100%;"
-                                                src="{{ Storage::url('signatures/' . $details['image']) }}" alt="">
-                                            {{-- <img style="height: 100%;"
-                                                src="data:image/png;base64, {{ $details['image_data'] }}" alt=""> 
-                                        @endif --}}
+                                                src="{{ url('upload/PROFILE/' . $details['image']) }}" alt="">
+                                        @endif  
                                     </div>
                                    
                                     <p >{{ $details['name'] }}</p>
