@@ -39,6 +39,7 @@ class ApplicationProfile extends BaseModel
 	protected $school_director_id;
 
 	protected $stamp;
+	protected $dormitory_stamp;
 	protected $division_head_signature;
 	protected $school_director_signature;
 	

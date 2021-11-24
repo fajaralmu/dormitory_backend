@@ -23,6 +23,7 @@ class AlterApplicationProfileTable extends Migration
         DB::statement('ALTER TABLE `application_profiles` ADD `stamp` VARCHAR(255) default NULL');
         DB::statement('ALTER TABLE `application_profiles` ADD `division_head_signature` VARCHAR(255) default NULL');
         DB::statement('ALTER TABLE `application_profiles` ADD `school_director_signature` VARCHAR(255) default NULL');
+        DB::statement('ALTER TABLE `application_profiles` ADD `dormitory_stamp` VARCHAR(255) default NULL');
     }
 
     /**

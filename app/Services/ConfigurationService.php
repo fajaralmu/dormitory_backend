@@ -67,6 +67,9 @@ class ConfigurationService
         if ($webRequest->attachmentInfo3) {
             $existing->division_head_signature = FileUtil::writeBase64File($webRequest->attachmentInfo3->url, 'PROFILE');
         }
+        if ($webRequest->attachmentInfo4) {
+            $existing->dormitory_stamp = FileUtil::writeBase64File($webRequest->attachmentInfo4->url, 'PROFILE');
+        }
 
         DB::table('application_profiles')->where('id', $existing->getId())->update($existing->toArray()) == 1;
         
