@@ -192,10 +192,17 @@
                                         {{ $details['as'] }}
                                     </p>
                                     <div style="height: 100px;position:relative;">
+                                        {{-- Stempel Kiis --}}
                                         @if ($dir === 'left' && !is_null($stamp))
                                             <img style="height: 110%;position:absolute;top: 10px;left: 70px;transform: rotate(350deg);"
                                                 src="{{ url('upload/PROFILE/' . $stamp) }}" alt="">
                                         @endif
+                                        {{-- Stempel Asrama --}}
+                                        @if ($dir === 'right' && !is_null($dormitory_stamp))
+                                            <img style="height: 110%;position:absolute;top: 10px;left: 70px;transform: rotate(350deg);"
+                                                src="{{ url('upload/PROFILE/' . $dormitory_stamp) }}" alt="">
+                                        @endif
+                                        {{-- TTD Mudir & Kepala Asrama --}}
                                         @if (!is_null($details['image']))
                                             <img style="height: 100%;"
                                                 src="{{ url('upload/PROFILE/' . $details['image']) }}" alt="">

@@ -34,11 +34,15 @@ class RaporController extends Controller
         )->first();
 
         return view('rapor.index', [
-            'class'        => $class,
-            'items'        => $data,
-            'semester'     => config('school.semester'),
-            'tahun_ajaran' => config('school.tahun_ajaran'),
-            'stamp'        => $profile->stamp,
+
+            'class'             => $class,
+            'items'             => $data,
+            'semester'          => config('school.semester'),
+            'tahun_ajaran'      => config('school.tahun_ajaran'),
+            'stamp'             => $profile->stamp,
+            'dormitory_stamp'   => $profile->dormitory_stamp,
+            'report_date'       => $profile->report_date,
+
             'signatures'   => [
                 'left'=> [
                     'as' => 'Direktur',
@@ -51,7 +55,6 @@ class RaporController extends Controller
                     'image' => $profile->division_head_signature
                 ]
             ],
-            'report_date'  => $profile->report_date,
         ]);
     }
 
